@@ -1,71 +1,29 @@
 import { AnimatedSection, StaggerContainer, StaggerItem } from '@/components/AnimatedSection';
 import { SectionHeader } from '@/components/SectionHeader';
 import { BookOpen, Calendar, ArrowRight } from 'lucide-react';
-
-interface Article {
-  title: string;
-  description: string;
-  date: string;
-  readTime: string;
-  url: string;
-  tags: string[];
-}
-
-const articles: Article[] = [
-  {
-    title: 'Building a Zero-Trust Network from Scratch',
-    description: 'A practical guide to implementing BeyondCorp-style security in a home lab environment.',
-    date: '2024-01-15',
-    readTime: '12 min',
-    url: '#',
-    tags: ['Zero Trust', 'Networking', 'Security'],
-  },
-  {
-    title: 'Detection Engineering: Beyond Simple Rules',
-    description: 'How to write detection logic that catches real threats while minimizing false positives.',
-    date: '2024-01-08',
-    readTime: '8 min',
-    url: '#',
-    tags: ['Detection', 'SIEM', 'Threat Hunting'],
-  },
-  {
-    title: 'Terraform Patterns for Secure AWS Deployments',
-    description: 'Reusable infrastructure patterns with security controls baked in from day one.',
-    date: '2023-12-22',
-    readTime: '10 min',
-    url: '#',
-    tags: ['Terraform', 'AWS', 'IaC'],
-  },
-  {
-    title: 'Lessons from Running a SOC Simulation',
-    description: 'What I learned building and operating a simulated Security Operations Center.',
-    date: '2023-12-10',
-    readTime: '6 min',
-    url: '#',
-    tags: ['SOC', 'Learning', 'Career'],
-  },
-];
+import { articles } from '@/data/writing';
+import { personalInfo } from '@/data/personal';
 
 export const Writing = () => {
   return (
-    <section id="writing" className="relative py-24 md:py-32 bg-card/30">
-      <div className="container px-6 md:px-8">
+    <section id="writing" className="relative py-32 md:py-40">
+      <div className="container px-6 md:px-8 max-w-7xl">
         <AnimatedSection>
           <SectionHeader 
             command="tail -n 4 ./blog/posts.log"
             title="Writing"
-            description="Thoughts on security, systems, and building things that work."
+            description="Breaking down complex tech topics into digestible pieces."
           />
         </AnimatedSection>
 
-        <StaggerContainer className="grid md:grid-cols-2 gap-6 mt-12" staggerDelay={0.1}>
+        <StaggerContainer className="grid md:grid-cols-2 gap-6 mt-16" staggerDelay={0.1}>
           {articles.map((article) => (
             <StaggerItem key={article.title}>
               <a 
                 href={article.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block h-full p-6 rounded-lg bg-card border border-border card-hover group"
+                className="block h-full p-7 rounded-xl bg-card border border-border/50 card-hover group shadow-sm hover:shadow-xl hover:shadow-primary/5 transition-all duration-300"
               >
                 <div className="flex items-center gap-4 mb-4 text-xs text-muted-foreground">
                   <span className="flex items-center gap-1">
@@ -82,10 +40,10 @@ export const Writing = () => {
                   </span>
                 </div>
 
-                <h3 className="text-lg font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
+                <h3 className="text-xl font-semibold text-foreground mb-3 group-hover:text-primary transition-colors">
                   {article.title}
                 </h3>
-                <p className="text-sm text-muted-foreground mb-4">
+                <p className="text-sm text-muted-foreground mb-5 leading-relaxed">
                   {article.description}
                 </p>
 
@@ -107,12 +65,12 @@ export const Writing = () => {
           ))}
         </StaggerContainer>
 
-        <AnimatedSection delay={0.3} className="mt-8 text-center">
+        <AnimatedSection delay={0.3} className="mt-12 text-center">
           <a 
-            href="https://medium.com" 
+            href={personalInfo.social.medium} 
             target="_blank" 
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors font-mono text-sm"
+            className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors font-mono text-sm hover:gap-3"
           >
             Read more on Medium
             <ArrowRight className="w-4 h-4" />

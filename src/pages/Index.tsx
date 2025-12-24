@@ -3,9 +3,12 @@ import { Navbar } from '@/components/Navbar';
 import { Hero } from '@/components/Hero';
 import { About } from '@/components/About';
 import { Projects } from '@/components/Projects';
-import { Resume } from '@/components/Resume';
+import { Experience } from '@/components/Experience';
+import { Certifications } from '@/components/Certifications';
+import { Leadership } from '@/components/Leadership';
 import { Writing } from '@/components/Writing';
 import { Contact, Footer } from '@/components/Contact';
+import { FloatingChatbot } from '@/components/FloatingChatbot';
 
 const Index = () => {
   return (
@@ -14,7 +17,7 @@ const Index = () => {
         <title>Cybersecurity & Cloud Engineer | Georgia Tech</title>
         <meta 
           name="description" 
-          content="Personal portfolio of a Georgia Tech Computer Engineering student specializing in cybersecurity, cloud infrastructure, automation, and applied AI. View projects, resume, and writing." 
+          content="Personal portfolio of a Georgia Tech Computer Engineering student specializing in cybersecurity, cloud infrastructure, automation, and applied AI. View projects and writing." 
         />
         <meta name="keywords" content="cybersecurity, cloud engineering, Georgia Tech, portfolio, security engineer, DevOps, AWS, automation" />
         <link rel="canonical" href="https://yourdomain.com" />
@@ -32,16 +35,19 @@ const Index = () => {
 
       <div className="relative min-h-screen bg-background noise-overlay scrollbar-thin">
         <Navbar />
-        <main>
-          <Hero />
-          <About />
-          <Projects />
-          <Resume />
-          <Writing />
-          <Contact />
-        </main>
-        <Footer />
-      </div>
+                    <main className="overflow-x-hidden">
+                      <Hero />
+                      <About />
+                      <Experience />
+                      <Projects />
+                      <Certifications />
+                      <Leadership />
+                      <Writing />
+                      <Contact />
+                    </main>
+                    <Footer />
+                    <FloatingChatbot />
+                  </div>
     </>
   );
 };

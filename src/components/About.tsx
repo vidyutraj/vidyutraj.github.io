@@ -1,109 +1,116 @@
-import { AnimatedSection, StaggerContainer, StaggerItem } from '@/components/AnimatedSection';
-import { SectionHeader, TechBadge } from '@/components/SectionHeader';
-import { Shield, Cloud, Terminal, Database, Eye, Zap } from 'lucide-react';
-
-const focusAreas = [
-  {
-    icon: Shield,
-    title: 'Cybersecurity',
-    description: 'SOC operations, threat detection, security governance, and infrastructure hardening.',
-    skills: ['SIEM/SOAR', 'Threat Hunting', 'Incident Response', 'Compliance'],
-  },
-  {
-    icon: Cloud,
-    title: 'Cloud & DevOps',
-    description: 'Designing and automating scalable cloud infrastructure with security built-in.',
-    skills: ['AWS', 'Terraform', 'CI/CD', 'Kubernetes'],
-  },
-  {
-    icon: Eye,
-    title: 'Observability',
-    description: 'Building systems that are transparent, traceable, and easy to debug at scale.',
-    skills: ['Prometheus', 'Grafana', 'ELK Stack', 'Distributed Tracing'],
-  },
-  {
-    icon: Zap,
-    title: 'Automation',
-    description: 'Eliminating toil through scripting, pipelines, and infrastructure as code.',
-    skills: ['Python', 'Bash', 'Ansible', 'GitHub Actions'],
-  },
-];
+import { AnimatedSection } from '@/components/AnimatedSection';
+import { SectionHeader } from '@/components/SectionHeader';
+import { Terminal, GraduationCap, Calendar } from 'lucide-react';
+import { personalInfo } from '@/data/personal';
 
 export const About = () => {
   return (
-    <section id="about" className="relative py-24 md:py-32">
-      <div className="container px-6 md:px-8">
+    <section id="about" className="relative py-32 md:py-40">
+      <div className="container px-6 md:px-8 max-w-7xl">
         <AnimatedSection>
           <SectionHeader 
             command="cat about.md"
             title="About Me"
-            description="Computer Engineering student at Georgia Tech with a focus on building secure, automated, and resilient systems."
           />
         </AnimatedSection>
 
-        <div className="grid lg:grid-cols-2 gap-12 mt-12">
+        <div className="grid lg:grid-cols-2 gap-8 mt-16">
           {/* Bio section */}
-          <AnimatedSection delay={0.1} direction="left">
-            <div className="space-y-6">
-              <div className="p-6 rounded-lg bg-card border border-border">
-                <div className="flex items-center gap-2 mb-4 font-mono text-sm text-muted-foreground">
-                  <Terminal className="w-4 h-4 text-primary" />
-                  <span>background.log</span>
-                </div>
-                <div className="space-y-4 text-muted-foreground leading-relaxed">
-                  <p>
-                    I'm a builder at heart — fascinated by how complex systems fail and how to make them resilient. 
-                    My work spans from writing detection rules in Splunk to architecting multi-region AWS deployments.
-                  </p>
-                  <p>
-                    Currently diving deep into{' '}
-                    <span className="text-foreground">zero-trust architecture</span>,{' '}
-                    <span className="text-foreground">detection engineering</span>, and{' '}
-                    <span className="text-foreground">cloud security posture management</span>.
-                  </p>
-                  <p>
-                    When I'm not in a terminal, I'm probably reading threat intelligence reports, 
-                    contributing to open-source security tools, or experimenting with new automation workflows.
-                  </p>
-                </div>
+          <AnimatedSection delay={0.1}>
+            <div className="h-full p-8 rounded-xl bg-card border border-border/50 shadow-lg shadow-background/50">
+              <div className="flex items-center gap-2 mb-6 font-mono text-sm text-muted-foreground">
+                <Terminal className="w-4 h-4 text-primary" />
+                <span>background.log</span>
               </div>
-
-              {/* Quick stats */}
-              <div className="grid grid-cols-3 gap-4">
-                {[
-                  { label: 'Projects', value: '15+' },
-                  { label: 'Certs', value: '4' },
-                  { label: 'Languages', value: '6+' },
-                ].map((stat) => (
-                  <div 
-                    key={stat.label}
-                    className="p-4 rounded-lg bg-secondary/50 border border-border text-center"
-                  >
-                    <div className="text-2xl font-bold text-primary font-mono">{stat.value}</div>
-                    <div className="text-sm text-muted-foreground">{stat.label}</div>
-                  </div>
-                ))}
+              <div className="space-y-5 text-muted-foreground leading-relaxed text-base">
+                <p>{personalInfo.bio.intro}</p>
+                <p>
+                  Currently diving deep into{' '}
+                  {personalInfo.bio.currentFocus.map((focus, index) => (
+                    <span key={focus}>
+                      <span className="text-foreground font-medium">{focus}</span>
+                      {index < personalInfo.bio.currentFocus.length - 1 && ', '}
+                      {index === personalInfo.bio.currentFocus.length - 2 && ' and '}
+                    </span>
+                  ))}
+                  .
+                </p>
+                <p>{personalInfo.bio.interests}</p>
               </div>
             </div>
           </AnimatedSection>
 
-          {/* Focus areas */}
-          <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 gap-4" staggerDelay={0.1}>
-            {focusAreas.map((area) => (
-              <StaggerItem key={area.title}>
-                <div className="h-full p-5 rounded-lg bg-card border border-border card-hover group">
-                  <area.icon className="w-8 h-8 text-primary mb-4 group-hover:text-glow transition-all" />
-                  <h3 className="text-lg font-semibold text-foreground mb-2">{area.title}</h3>
-                  <p className="text-sm text-muted-foreground mb-4">{area.description}</p>
+          {/* Education section */}
+          <AnimatedSection delay={0.2}>
+            <div className="h-full p-8 rounded-xl bg-card border border-border/50 shadow-lg shadow-background/50 card-hover group">
+              <div className="flex items-center gap-2 mb-6 font-mono text-sm text-muted-foreground">
+                <GraduationCap className="w-4 h-4 text-primary" />
+                <span>education.log</span>
+              </div>
+              
+              <div className="space-y-6">
+                {/* Logo and Institution */}
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0">
+                    <img 
+                      src="/logos/GT.png" 
+                      alt="Georgia Tech Logo"
+                      className="w-16 h-16 object-contain rounded-lg bg-white/5 p-2 border border-border/30 group-hover:border-primary/30 transition-colors"
+                    />
+                  </div>
+                  <div className="flex-grow">
+                    <h3 className="text-xl font-bold text-foreground mb-1.5 group-hover:text-primary transition-colors">
+                      Georgia Institute of Technology
+                    </h3>
+                    <div className="flex items-center gap-2 text-muted-foreground mb-2">
+                      <Calendar className="w-3.5 h-3.5" />
+                      <span className="text-sm font-mono">Expected May 2027</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Degree Info */}
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary"></div>
+                    <p className="text-base font-semibold text-foreground">
+                      B.S. in Computer Engineering
+                    </p>
+                  </div>
+                  <p className="text-sm text-muted-foreground ml-3.5">
+                    Threads in Cybersecurity and Information Internetworks
+                  </p>
+                </div>
+                
+                {/* Coursework */}
+                <div className="pt-4 border-t border-border/30">
+                  <p className="text-sm font-medium text-foreground mb-4 flex items-center gap-2">
+                    <span className="w-1 h-1 rounded-full bg-primary"></span>
+                    Relevant Coursework
+                  </p>
                   <div className="flex flex-wrap gap-2">
-                    {area.skills.map((skill) => (
-                      <TechBadge key={skill}>{skill}</TechBadge>
+                    {[
+                      'Data Structures & Algorithms',
+                      'Objects & Design',
+                      'Object-Oriented Programming',
+                      'Computer Systems Programming',
+                      'Computer Networking',
+                      'Computer Architecture',
+                      'FPGA Design',
+                      'Linear Algebra',
+                    ].map((course) => (
+                      <span
+                        key={course}
+                        className="px-3 py-1.5 text-xs bg-secondary/50 text-muted-foreground rounded-md border border-border/50 hover:border-primary/30 hover:bg-secondary/70 hover:text-foreground transition-all duration-200"
+                      >
+                        {course}
+                      </span>
                     ))}
                   </div>
                 </div>
-              </StaggerItem>
-            ))}
-          </StaggerContainer>
+              </div>
+            </div>
+          </AnimatedSection>
         </div>
       </div>
     </section>

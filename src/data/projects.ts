@@ -1,0 +1,145 @@
+export interface Project {
+  title: string;
+  category: string;
+  description: string;
+  problem: string;
+  approach: string;
+  outcome: string;
+  techStack: string[];
+  githubUrl?: string;
+  demoUrl?: string;
+  featured?: boolean;
+  videoUrl?: string;
+  slidesUrl?: string;
+  achievements?: string[];
+  additionalDetails?: string;
+}
+
+export const projects: Project[] = [
+  {
+    title: 'UPS Airlines OptiFlight',
+    category: 'Automation & Tooling',
+    description: 'Optimization-driven solution that automates outbound flight plans in response to real-time weather disruptions at UPS Airlines\' global hub.',
+    problem: 'Weather disruptions required hundreds of manual hours to reschedule flights.',
+    approach: 'Developed a multi-objective optimization solution using Gurobi that enforces millions of complex aircraft, crew, and regulatory constraints to automatically generate optimal flight plans in real-time.',
+    outcome: 'Cut recovery time by 40% and saved 500+ labor hours. Won 1st place in Supply Chain & Transportation.',
+    techStack: ['React', 'Flask', 'Gurobi', 'Python', 'Shell Scripting', 'REST APIs'],
+    videoUrl: 'https://drive.google.com/file/d/1J5mbiUuIFv8p1JwzNEC7VZ-WNoqs1D1z/view?resourcekey',
+    slidesUrl: '/logos/UPS OptiFlight Final Presentation (1).pdf',
+    achievements: [
+      '1st Place — Supply Chain & Transportation Category',
+      'Top 2 Overall — Out of 90 teams (400+ teams company-wide)',
+      'Presented to Bala Subramanian, CTO of UPS, and global/regional executives',
+    ],
+    additionalDetails: 'A production-considered solution recognized for its potential to save hundreds of labor hours and significantly improve operational efficiency. The system automates outbound flight plan optimization in response to real-time weather disruptions, handling complex constraints including aircraft availability, crew scheduling, and regulatory requirements.',
+  },
+  {
+    title: 'SimpliEarn',
+    category: 'Fullstack',
+    description: 'AI-powered platform that transforms earnings calls into actionable insights through multimodal sentiment analysis and natural language processing.',
+    problem: 'Earnings calls are too complex for most investors to understand.',
+    approach: 'Founded and led a 12-student team, developing a multimodal sentiment analysis pipeline using FinBERT and Wav2Vec that aligns speech with transcripts. Combined with a RAG system processing audio through ASR and transformer-based summarization.',
+    outcome: 'Improved sentiment accuracy by 67% and serving 500+ users with actionable financial insights.',
+    techStack: ['Python', 'TypeScript', 'FinBERT', 'Wav2Vec', 'RAG', 'ASR', 'Transformer Models', 'Deep Learning'],
+    githubUrl: 'https://github.com/gt-big-data/simpli-earn',
+    demoUrl: 'https://gtbigdatabigimpact.com/projects/simpli-earn',
+    videoUrl: 'https://www.youtube.com/watch?v=GO7GYQC7gV4',
+    achievements: [
+      'Founded and led 12-student development team',
+      '67% improvement in sentiment accuracy through multimodal alignment',
+      '70% improvement in retrieval speed, 25% improvement in analysis accuracy',
+    ],
+    additionalDetails: 'Developed a multimodal pipeline using FinBERT and Wav2Vec that aligns speech with transcripts. The platform delivers structured insights including entity-level sentiment scores, volatility markers, and sector correlations, transforming complex earnings calls into digestible summaries and visualizations.',
+  },
+  {
+    title: 'AWS Three-Tier Architecture',
+    category: 'Cloud & DevOps',
+    description: 'Hands-on guide demonstrating how to build a scalable three-tier architecture in AWS with presentation, application, and data layers separated across public and private subnets.',
+    problem: 'Web applications need scalable, secure architecture patterns to handle traffic and protect data.',
+    approach: 'Designed and implemented a three-tier architecture using VPCs, public/private subnets, ALBs, EC2 instances, NAT Gateways, Auto Scaling Groups, and RDS. Configured proper network isolation between tiers to ensure security and scalability.',
+    outcome: 'Built a production-ready architecture demonstrating modularity, security, scalability, fault tolerance, and high availability principles for AWS infrastructure.',
+    techStack: ['AWS VPC', 'EC2', 'Application Load Balancer', 'RDS', 'Auto Scaling', 'NAT Gateway', 'Cloud Infrastructure'],
+    demoUrl: 'https://medium.com/aws-in-plain-english/creating-a-three-tier-architecture-in-aws-681a691bf36e',
+    additionalDetails: 'A comprehensive hands-on project explaining and implementing a three-tier architecture in AWS. The architecture consists of three logical layers: Presentation Layer (Web Tier) located in public subnets with Application Load Balancers, EC2 Web Servers, and NAT Gateways for user interaction; Logic Layer (Application Tier) in private subnets with EC2 Application Servers, AWS Lambda options, and autoscaling groups/load balancing for business logic processing; and Data Layer (Database Tier) in private subnets using Amazon RDS, DynamoDB, or Aurora for secure data storage with no direct public access. This project clearly demonstrates network traffic flow and the power of three-tier architecture patterns. Key takeaways include modularity, security, scalability, fault tolerance, and high availability. The project can be completed in a few hours and provides fundamental AWS learning for beginners.',
+  },
+  {
+    title: 'CampusBuzz',
+    category: 'Fullstack',
+    description: 'Django-powered campus events platform helping students discover, filter, and RSVP to campus events with calendar sync and organization management tools.',
+    problem: 'Students struggle to discover and organize campus events across different organizations and categories.',
+    approach: 'Built a full-stack Django application with RESTful API, real-time event updates, advanced filtering by category, date, perks, and location. Implemented RSVP system, Google Calendar/Outlook sync, map-based event browsing with geocoding, and organization registration with leader verification.',
+    outcome: 'Created a centralized platform enabling students to discover events through smart filtering and RSVP with calendar integration, while organizations can manage events and track attendance.',
+    techStack: ['Django', 'Django REST Framework', 'Python', 'Tailwind CSS', 'JavaScript', 'Geocoding', 'SQLite'],
+    demoUrl: 'https://campusbuzz.pythonanywhere.com/',
+    videoUrl: 'https://www.youtube.com/watch?v=aODvMmoLD7s',
+    additionalDetails: 'CampusBuzz is a Django-powered campus events platform that connects students, organizations, and administrators through real-time event discovery. For students, the platform provides a live dashboard of upcoming campus events, advanced filtering by category, subcategory, host organization, date, modality, and perks (free food/swag), detailed event pages with descriptions and locations, RSVP functionality with automatic calendar integration, Google Calendar and Outlook sync, and personal profile creation to showcase interests. For student organization leaders, the platform enables official organization registration with leader verification, event creation and publishing with complete details, real-time event editing, full RSVP list viewing for attendance estimation, and board member management with shared administrative access. The platform features responsive Tailwind CSS UI, RESTful API built with Django REST framework, map-based event browsing, real-time event updates, geocoding integration, and robust privacy controls with comprehensive moderation tools for administrators.',
+  },
+  {
+    title: 'AWS SFTP to S3 Transfer',
+    category: 'Cloud & DevOps',
+    description: 'Hands-on guide for configuring AWS Transfer Family SFTP server to enable secure, encrypted file transfers directly to S3 buckets using SSH-based authentication.',
+    problem: 'Transferring files securely to cloud storage requires complex setup without managed solutions.',
+    approach: 'Configured AWS Transfer Family SFTP server with SSH key authentication, IAM roles for S3 access, and direct S3 integration. Set up secure file transfer pipeline using public key authentication and service-managed identity provider.',
+    outcome: 'Successfully established secure SFTP endpoint enabling encrypted file transfers directly to S3, providing scalable solution for data migration and secure file sharing.',
+    techStack: ['AWS Transfer Family', 'AWS S3', 'IAM', 'SSH', 'SFTP', 'Cloud Infrastructure'],
+    githubUrl: 'https://github.com/vidyutraj/aws-sftp-to-s3-transfer-guide',
+    additionalDetails: 'A comprehensive guide for setting up AWS Transfer Family SFTP server to enable secure file transfers directly to Amazon S3 buckets. The project covers S3 bucket creation, IAM role configuration with proper trust policies for AWS Transfer service, SFTP server setup with service-managed identity provider, SSH key pair generation and authentication, user configuration with S3 access permissions, and testing secure file transfers. This solution provides encrypted data transfer, built-in authentication, and direct S3 integration suitable for data migration, backup solutions, and secure file sharing use cases.',
+  },
+  {
+    title: 'Kali to Windows VM: SSH Authentication Lab',
+    category: 'Cybersecurity Labs',
+    description: 'Hands-on security lab exploring SSH authentication, setting up password and key-based access from Kali Linux to Windows, with focus on Windows OpenSSH differences and real-world debugging.',
+    problem: 'Understanding how SSH authentication works in mixed environments is challenging without hands-on practice.',
+    approach: 'Built a lab environment with Kali Linux and Windows Pro VMs to implement both password and key-based SSH authentication. Explored Windows OpenSSH differences, proper ACL configuration, and debugging techniques for authentication failures.',
+    outcome: 'Successfully configured key-based SSH authentication between Kali and Windows, learning critical differences in Windows OpenSSH behavior including administrator key file locations and ACL requirements.',
+    techStack: ['SSH', 'OpenSSH', 'PowerShell', 'Kali Linux', 'Windows', 'Ed25519', 'Public Key Authentication'],
+    githubUrl: 'https://github.com/vidyutraj/Kali-to-Windows-VM-Remote-Access-Lab',
+    additionalDetails: 'A detailed hands-on lab documenting SSH setup from Kali Linux to Windows Pro VM, covering password-based authentication validation, key pair generation, Windows-specific administrator authorized_keys location (C:\\ProgramData\\ssh\\administrators_authorized_keys), proper file encoding, ACL configuration, and SSH debugging techniques. The lab provides practical insights into how Windows OpenSSH differs from Linux/macOS implementations and real-world troubleshooting scenarios.',
+  },
+  {
+    title: 'JobSite',
+    category: 'Fullstack',
+    description: 'Django-based web application connecting job seekers with recruiters through intelligent matching, interactive Kanban boards, and location-based search.',
+    problem: 'Job seekers and recruiters struggle to efficiently connect and manage the hiring process.',
+    approach: 'Built a full-stack Django application with intelligent matching algorithms, interactive Kanban boards for application tracking, geocoding for location-based search, and real-time AJAX interactions. Implemented separate workflows for job seekers and recruiters with comprehensive profile management and messaging.',
+    outcome: 'Created a platform enabling job seekers to track applications via drag-and-drop Kanban boards and recruiters to manage candidates through interactive pipelines, with intelligent matching connecting 1,200+ users.',
+    techStack: ['Django', 'Python', 'HTML', 'CSS', 'Bootstrap', 'AJAX', 'JavaScript', 'Geocoding', 'SQLite'],
+    githubUrl: 'https://github.com/RossKlaiber/2340_Bruce_2',
+    demoUrl: 'https://bruceteam2.pythonanywhere.com/',
+    videoUrl: 'https://www.youtube.com/watch?v=xPWAPdPMlEM',
+    additionalDetails: 'JobSite is a comprehensive Django-based job matching platform with distinct features for job seekers and recruiters. Job seekers can create detailed profiles, search with advanced filters (title, skills, location, salary, remote, visa sponsorship), receive personalized recommendations, apply with one click, and track applications through an interactive Kanban board (Applied → Under Review → Interview → Offer → Closed) with drag-and-drop functionality. They can also discover opportunities on interactive maps with distance-based filtering. Recruiters can post comprehensive job listings with location mapping, search candidates by skills and experience, view AI-weighted recommendations, manage applicants through drag-and-drop pipelines, message candidates directly, save searches with automatic notifications, and visualize applicant locations on maps. The platform features responsive Bootstrap UI, AJAX interactions, mobile-friendly drag-and-drop, real-time synchronization, geocoding integration, and robust privacy controls with comprehensive moderation tools.',
+  },
+  {
+    title: 'AWS S3 Backup Automation',
+    category: 'Automation & Tooling',
+    description: 'Hands-on lab demonstrating automated S3 file backups using Bash scripting and AWS CLI, with bucket configuration verification and detailed reporting.',
+    problem: 'Manual file backups to cloud storage are time-consuming and error-prone.',
+    approach: 'Built a Bash script that automates S3 file uploads, checks bucket security configurations (public/private), and generates detailed reports. Integrated AWS CLI for seamless cloud storage management.',
+    outcome: 'Created an automated backup solution that uploads files, verifies bucket security, and generates reports for efficient cloud storage management.',
+    techStack: ['Bash', 'AWS CLI', 'AWS S3', 'Shell Scripting', 'Cloud Storage', 'IAM'],
+    githubUrl: 'https://github.com/vidyutraj/aws-s3-backup',
+    additionalDetails: 'A hands-on lab project demonstrating automated S3 file backups using Bash scripting and AWS CLI. The project covers IAM user creation, AWS CLI configuration, S3 bucket creation, automated file uploads, bucket security verification (checking if buckets are public or private), report generation, and proper cleanup procedures. This lab provides practical experience with AWS S3, Bash scripting, and the AWS CLI for secure and automated file management.',
+  },
+  {
+    title: 'TheraFit',
+    category: 'Fullstack',
+    description: 'AI-powered physical therapy coach that provides personalized recovery workouts through voice interaction and real-time exercise guidance.',
+    problem: 'Recovering from pain or injury is confusing and isolating without personalized guidance.',
+    approach: 'Built a full-stack MERN application with a RAG model for personalized exercise recommendations. Integrated voice recognition and LangChain agentic workflows to create an interactive physical therapy assistant that adapts to user feedback.',
+    outcome: 'Created an accessible platform offering tailored exercise plans and hands-free AI-guided sessions, making recovery more accessible and effective.',
+    techStack: ['React', 'Node.js', 'Express', 'MongoDB', 'Python', 'Flask', 'LangChain', 'OpenAI', 'Tailwind'],
+    githubUrl: 'https://github.com/Nehal70/fitplan',
+    demoUrl: 'https://devpost.com/software/fitplan',
+    videoUrl: 'https://www.youtube.com/watch?v=Y2BJNqopA8k',
+    additionalDetails: 'We built TheraFit using the MERN stack, leveraging MongoDB for database storage, React for the front-end interface, Express to handle backend operations, and JavaScript to tie it all together. The app uses a RAG (Retrieval-Augmented Generation) model trained on Kaggle datasets to deliver personalized, effective workout recommendations. Voice recognition and timers were integrated to provide a more immersive experience, allowing real-time interaction. The app is designed for scalability and responsiveness, utilizing the full power of the MERN stack to ensure smooth user experiences and efficient data processing.',
+  },
+];
+
+export const projectCategories = [
+  'All',
+  'Cybersecurity Labs',
+  'Cloud & DevOps',
+  'Automation & Tooling',
+  'Fullstack',
+];
+
