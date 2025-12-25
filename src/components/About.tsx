@@ -62,9 +62,15 @@ export const About = () => {
                     <h3 className="text-xl font-bold text-foreground mb-1.5 group-hover:text-primary transition-colors">
                       Georgia Institute of Technology
                     </h3>
-                    <div className="flex items-center gap-2 text-muted-foreground mb-2">
-                      <Calendar className="w-3.5 h-3.5" />
-                      <span className="text-sm font-mono">Expected May 2027</span>
+                    <div className="flex items-center gap-4 text-muted-foreground mb-2">
+                      <div className="flex items-center gap-1.5">
+                        <Calendar className="w-3.5 h-3.5" />
+                        <span className="text-sm font-mono">Expected May 2027</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-sm font-medium text-foreground">GPA:</span>
+                        <span className="text-sm font-mono">4.0</span>
+                      </div>
                     </div>
                   </div>
                 </div>

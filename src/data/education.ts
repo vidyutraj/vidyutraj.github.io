@@ -14,18 +14,27 @@ export interface Education {
 }
 
 export const education: Education[] = [
-  // Add your education here
-  // Example:
-  // {
-  //   institution: 'Georgia Institute of Technology',
-  //   degree: 'Bachelor of Science',
-  //   fieldOfStudy: 'Computer Engineering',
-  //   startDate: '2023-08',
-  //   endDate: '2027-05',
-  //   location: 'Atlanta, GA',
-  //   gpa: '3.8/4.0',
-  //   honors: ['Dean\'s List'],
-  //   coursework: ['Cybersecurity', 'Cloud Computing', 'Systems Design'],
-  // },
+  {
+    institution: 'Georgia Institute of Technology',
+    degree: 'Bachelor of Science',
+    fieldOfStudy: 'Computer Engineering',
+    startDate: '2023-08',
+    endDate: '2027-05',
+    location: 'Atlanta, GA',
+    gpa: '4.0',
+    coursework: [
+      'Data Structures & Algorithms',
+      'Objects & Design',
+      'Object-Oriented Programming',
+      'Computer Systems Programming',
+      'Computer Networking',
+      'Computer Architecture',
+      'FPGA Design',
+      'Linear Algebra',
+    ],
+    logo: '/logos/GT.png',
+    logoAlt: 'Georgia Tech Logo',
+    website: 'https://www.gatech.edu',
+  },
 ];
 

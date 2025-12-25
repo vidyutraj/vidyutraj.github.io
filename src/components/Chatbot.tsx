@@ -49,6 +49,7 @@ Degree: B.S. in Computer Engineering
 Threads: Cybersecurity and Information Internetworks
 Expected Graduation: May 2027
 Location: Atlanta, GA
+GPA: 4.0
 
 Relevant Coursework:
 ${[
