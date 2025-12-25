@@ -1,73 +1,148 @@
-# Welcome to your Lovable project
+# Vidyut Rajagopal - Portfolio
 
-## Project info
+> Cybersecurity & Cloud Engineer | Georgia Tech '27 | Building secure, resilient systems
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+A modern, responsive portfolio website showcasing my work in cybersecurity, cloud infrastructure, and automation. Built with React, TypeScript, and deployed on GitHub Pages with a secure Cloudflare Worker backend.
 
-## How can I edit this code?
+🌐 **Live Site:** [https://vidyutraj.github.io/Vidyut-Portfolio/](https://vidyutraj.github.io/Vidyut-Portfolio/)
 
-There are several ways of editing your application.
+## ✨ Features
 
-**Use Lovable**
+- **Modern UI/UX** - Dark theme with terminal-inspired design
+- **AI-Powered Chatbot** - Interactive portfolio assistant powered by Groq AI
+- **Secure Architecture** - API keys stored server-side via Cloudflare Workers
+- **Responsive Design** - Optimized for all devices
+- **Performance Optimized** - Fast loading with Vite build system
+- **SEO Friendly** - Proper meta tags and semantic HTML
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+## 🛠️ Tech Stack
 
-Changes made via Lovable will be committed automatically to this repo.
+- **Frontend:** React 18, TypeScript, Vite
+- **Styling:** Tailwind CSS, shadcn/ui components
+- **Deployment:** GitHub Pages (frontend), Cloudflare Workers (backend)
+- **AI:** Groq API (via secure Cloudflare Worker proxy)
+- **Animations:** Framer Motion
 
-**Use your preferred IDE**
+## 🚀 Quick Start
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Prerequisites
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- Node.js 18+ and npm
+- Git
 
-Follow these steps:
+### Installation
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+```bash
+# Clone the repository
+git clone https://github.com/vidyutraj/Vidyut-Portfolio.git
+cd Vidyut-Portfolio
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+# Install dependencies
+npm install
 
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Start development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+Visit `http://localhost:8080` to see the site.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Building for Production
 
-**Use GitHub Codespaces**
+```bash
+npm run build
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+The built files will be in the `dist/` directory.
 
-## What technologies are used for this project?
+## 📁 Project Structure
 
-This project is built with:
+```
+├── src/
+│   ├── components/     # React components
+│   ├── data/          # Portfolio content (projects, experience, etc.)
+│   ├── config/        # Configuration files
+│   ├── lib/           # Utility functions
+│   └── pages/         # Page components
+├── cloudflare-worker/ # Backend API proxy
+├── public/            # Static assets
+└── dist/              # Build output (gitignored)
+```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## 🔒 Security
 
-## How can I deploy this project?
+This portfolio uses a secure architecture where API keys are never exposed to the client:
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+- **Frontend** → Calls Cloudflare Worker endpoint
+- **Cloudflare Worker** → Securely proxies requests to Groq API
+- **API Key** → Stored only in Cloudflare's secret storage
 
-## Can I connect a custom domain to my Lovable project?
+See [CHATBOT_SECURITY.md](./CHATBOT_SECURITY.md) for detailed security documentation.
 
-Yes, you can!
+## 📝 Customization
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+### Updating Content
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+All portfolio content is in `src/data/`:
+
+- `personal.ts` - Personal info, bio, social links
+- `projects.ts` - Project listings
+- `experience.ts` - Work experience
+- `certifications.ts` - Certifications
+- `education.ts` - Education details
+- `leadership.ts` - Leadership roles
+- `writing.ts` - Articles and blog posts
+
+### Styling
+
+- Global styles: `src/index.css`
+- Theme configuration: `tailwind.config.ts`
+- Component styles: Tailwind classes in component files
+
+## 🚢 Deployment
+
+### Frontend (GitHub Pages)
+
+The site is automatically deployed via GitHub Actions on every push to `main`. 
+
+**Manual deployment:**
+```bash
+npm run build
+npm run deploy
+```
+
+### Backend (Cloudflare Worker)
+
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed deployment instructions.
+
+**Quick setup:**
+```bash
+cd cloudflare-worker
+npm install
+wrangler secret put GROQ_API_KEY
+npm run deploy
+```
+
+## 📚 Documentation
+
+- [CHATBOT_SECURITY.md](./CHATBOT_SECURITY.md) - Security architecture details
+- [DEPLOYMENT.md](./DEPLOYMENT.md) - Deployment guide
+- [cloudflare-worker/README.md](./cloudflare-worker/README.md) - Worker setup
+
+## 🤝 Contributing
+
+This is a personal portfolio, but suggestions and feedback are welcome! Feel free to open an issue or submit a pull request.
+
+## 📄 License
+
+This project is open source and available under the [MIT License](LICENSE).
+
+## 🔗 Links
+
+- **Portfolio:** [https://vidyutraj.github.io/Vidyut-Portfolio/](https://vidyutraj.github.io/Vidyut-Portfolio/)
+- **GitHub:** [@vidyutraj](https://github.com/vidyutraj)
+- **LinkedIn:** [vidyut-rajagopal](https://linkedin.com/in/vidyut-rajagopal)
+- **Medium:** [@vidyut.rajagopal2006](https://medium.com/@vidyut.rajagopal2006)
+
+---
+
+Built with ❤️ by Vidyut Rajagopal

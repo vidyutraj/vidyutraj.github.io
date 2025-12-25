@@ -6,7 +6,10 @@ This directory contains all the static content for your portfolio. Edit these fi
 
 - **`personal.ts`** - Personal information, bio, stats, social links, resume paths
 - **`projects.ts`** - Project listings with details, tech stacks, and links
-- **`experience.ts`** - Focus areas, skills, and work experience (currently has template)
+- **`experience.ts`** - Work experience with roles, responsibilities, and technologies
+- **`certifications.ts`** - Professional certifications
+- **`education.ts`** - Education history
+- **`leadership.ts`** - Leadership roles and organizations
 - **`writing.ts`** - Blog posts and articles
 
 ## How to Update Content
