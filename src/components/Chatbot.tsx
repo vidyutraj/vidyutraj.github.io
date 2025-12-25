@@ -7,6 +7,7 @@ import { experiences } from '@/data/experience';
 import { certifications } from '@/data/certifications';
 import { leadership } from '@/data/leadership';
 import { articles } from '@/data/writing';
+import { CHATBOT_BACKEND_URL } from '@/config/chatbot';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -166,38 +167,31 @@ export const Chatbot = () => {
     setIsLoading(true);
 
     try {
-      const apiKey = import.meta.env.VITE_GROQ_API_KEY;
-      
-      if (!apiKey || apiKey === 'your_groq_api_key_here') {
-        throw new Error('API key not configured');
-      }
-
-      // Using Groq API (free tier, very fast)
-      // Note: In production, you should proxy this through your backend to hide API keys
-      const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      // Call secure backend endpoint instead of Groq directly
+      // The backend handles API key authentication server-side
+      const response = await fetch(CHATBOT_BACKEND_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`,
         },
         body: JSON.stringify({
-          model: 'llama-3.1-8b-instant', // Fast, free model
           messages: [
             { role: 'system', content: SYSTEM_PROMPT },
             ...messages.map(m => ({ role: m.role, content: m.content })),
             { role: 'user', content: userMessage.content },
           ],
-          temperature: 0.3, // Lower temperature for more grounded, factual responses
-          max_tokens: 400, // Slightly reduced to encourage concise, evidence-based answers
         }),
       });
 
       if (!response.ok) {
-        throw new Error(`API error: ${response.status}`);
+        if (response.status === 405) {
+          throw new Error('Method not allowed');
+        }
+        throw new Error(`Backend error: ${response.status}`);
       }
 
       const data = await response.json();
-      const content = data.choices[0]?.message?.content || 'Sorry, I encountered an error processing your request.';
+      const content = data.choices?.[0]?.message?.content || data.content || 'Sorry, I encountered an error processing your request.';
       
       const assistantMessage: Message = {
         role: 'assistant',
@@ -208,11 +202,11 @@ export const Chatbot = () => {
       setMessages(prev => [...prev, assistantMessage]);
     } catch (error) {
       console.error('Chatbot error:', error);
-      const apiKey = import.meta.env.VITE_GROQ_API_KEY;
-      let errorContent = 'Sorry, I\'m having trouble connecting right now. Please try again later or reach out directly via email!';
+      let errorContent = 'Sorry, I\'m having trouble connecting to the chatbot service right now. Please try again later or reach out directly via email!';
       
-      if (!apiKey || apiKey === 'your_groq_api_key_here') {
-        errorContent = 'Chatbot API key not configured. Please set VITE_GROQ_API_KEY in your .env file. For now, feel free to reach out via email!';
+      // Provide helpful error message for network issues
+      if (error instanceof TypeError && error.message.includes('fetch')) {
+        errorContent = 'Unable to connect to the chatbot service. Please check your connection and try again, or reach out directly via email!';
       }
       
       const errorMessage: Message = {

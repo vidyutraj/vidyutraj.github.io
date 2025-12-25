@@ -1,0 +1,17 @@
+{
+  "name": "groq-chat-worker",
+  "version": "1.0.0",
+  "description": "Cloudflare Worker for securely proxying Groq API requests",
+  "main": "src/index.ts",
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev",
+    "tail": "wrangler tail"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240101.0",
+    "typescript": "^5.3.3",
+    "wrangler": "^3.19.0"
+  }
+}
+
