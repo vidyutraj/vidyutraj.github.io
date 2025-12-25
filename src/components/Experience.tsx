@@ -127,7 +127,7 @@ const TimelineEntry = ({
               {company.logo ? (
                 <div className="w-12 h-12 md:w-14 md:h-14 rounded-lg bg-white dark:bg-secondary/50 p-1.5 flex items-center justify-center border border-border/50 shadow-sm overflow-hidden flex-shrink-0">
                   <img 
-                    src={company.logo} 
+                    src={company.logo.startsWith('http') ? company.logo : `${import.meta.env.BASE_URL}${company.logo.startsWith('/') ? company.logo.slice(1) : company.logo}`}
                     alt={company.logoAlt || `${company.company} logo`}
                     className="w-full h-full object-contain object-center"
                   />

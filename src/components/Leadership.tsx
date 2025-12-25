@@ -47,7 +47,7 @@ export const Leadership = () => {
                   {lead.logo && (
                     <div className="flex-shrink-0">
                       <img 
-                        src={lead.logo} 
+                        src={lead.logo.startsWith('http') ? lead.logo : `${import.meta.env.BASE_URL}${lead.logo.startsWith('/') ? lead.logo.slice(1) : lead.logo}`}
                         alt={lead.logoAlt || `${lead.organization} logo`}
                         className="w-16 h-16 object-contain rounded-lg"
                       />

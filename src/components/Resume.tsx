@@ -62,7 +62,7 @@ export const Resume = () => {
               {/* Hover overlay */}
               <div className="absolute inset-0 mt-8 bg-gradient-to-t from-card via-transparent to-transparent flex items-end justify-center pb-8 opacity-0 group-hover:opacity-100 transition-opacity">
                 <Button variant="hero" size="lg" asChild>
-                  <a href={personalInfo.resume.pdfPath} target="_blank" rel="noopener noreferrer">
+                  <a href={`${import.meta.env.BASE_URL}${personalInfo.resume.pdfPath.startsWith('/') ? personalInfo.resume.pdfPath.slice(1) : personalInfo.resume.pdfPath}`} target="_blank" rel="noopener noreferrer">
                     <FileText className="w-5 h-5" />
                     View Full Resume
                   </a>
@@ -99,7 +99,7 @@ export const Resume = () => {
               <StaggerContainer className="grid grid-cols-2 gap-4" staggerDelay={0.1}>
                 <StaggerItem>
                   <Button variant="hero" className="w-full" size="lg" asChild>
-                    <a href={personalInfo.resume.pdfPath} download>
+                    <a href={`${import.meta.env.BASE_URL}${personalInfo.resume.pdfPath.startsWith('/') ? personalInfo.resume.pdfPath.slice(1) : personalInfo.resume.pdfPath}`} download>
                       <Download className="w-5 h-5" />
                       Download PDF
                     </a>

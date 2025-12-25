@@ -106,7 +106,7 @@ export const Hero = () => {
                 {/* Image container with border and shadow */}
                 <div className="relative w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-full overflow-hidden border-4 border-primary/30 shadow-2xl shadow-primary/20 hover:border-primary/50 transition-all duration-300 hover:scale-105 hover:rotate-3 hover:shadow-primary/40">
                   <img 
-                    src="/logos/Portrait_Vidyut.jpg" 
+                    src={`${import.meta.env.BASE_URL}logos/Portrait_Vidyut.jpg`}
                     alt="Vidyut Rajagopal"
                     className="w-full h-full object-cover"
                     style={{ objectPosition: 'center 20%' }}

@@ -47,7 +47,7 @@ export const Certifications = () => {
                   {cert.logo && (
                     <div className="flex-shrink-0">
                       <img 
-                        src={cert.logo} 
+                        src={cert.logo.startsWith('http') ? cert.logo : `${import.meta.env.BASE_URL}${cert.logo.startsWith('/') ? cert.logo.slice(1) : cert.logo}`}
                         alt={cert.logoAlt || `${cert.issuer} logo`}
                         className="w-12 h-12 object-contain rounded-lg"
                       />

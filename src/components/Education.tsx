@@ -47,7 +47,7 @@ export const Education = () => {
                   {edu.logo && (
                     <div className="flex-shrink-0">
                       <img 
-                        src={edu.logo} 
+                        src={edu.logo.startsWith('http') ? edu.logo : `${import.meta.env.BASE_URL}${edu.logo.startsWith('/') ? edu.logo.slice(1) : edu.logo}`}
                         alt={edu.logoAlt || `${edu.institution} logo`}
                         className="w-16 h-16 object-contain rounded-lg"
                       />

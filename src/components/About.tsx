@@ -53,7 +53,7 @@ export const About = () => {
                 <div className="flex items-start gap-4">
                   <div className="flex-shrink-0">
                     <img 
-                      src="/logos/GT.png" 
+                      src={`${import.meta.env.BASE_URL}logos/GT.png`}
                       alt="Georgia Tech Logo"
                       className="w-16 h-16 object-contain rounded-lg bg-white/5 p-2 border border-border/30 group-hover:border-primary/30 transition-colors"
                     />
