@@ -20,7 +20,7 @@ const Index = () => {
           content="Personal portfolio of a Georgia Tech Computer Engineering student specializing in cybersecurity, cloud infrastructure, automation, and applied AI. View projects and writing." 
         />
         <meta name="keywords" content="cybersecurity, cloud engineering, Georgia Tech, portfolio, security engineer, DevOps, AWS, automation" />
-        <link rel="canonical" href="https://vidyutraj.github.io/Vidyut-Portfolio/" />
+        <link rel="canonical" href="https://vidyutraj.github.io/" />
         
         {/* Open Graph */}
         <meta property="og:title" content="Cybersecurity & Cloud Engineer Portfolio" />

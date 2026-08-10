@@ -4,7 +4,7 @@
 
 A modern, responsive portfolio website showcasing my work in cybersecurity, cloud infrastructure, and automation. Built with React, TypeScript, and deployed on GitHub Pages with a secure Cloudflare Worker backend.
 
-🌐 **Live Site:** [https://vidyutraj.github.io/Vidyut-Portfolio/](https://vidyutraj.github.io/Vidyut-Portfolio/)
+🌐 **Live Site:** [https://vidyutraj.github.io/](https://vidyutraj.github.io/)
 
 ## ✨ Features
 
@@ -37,8 +37,8 @@ A modern, responsive portfolio website showcasing my work in cybersecurity, clou
 
 ```bash
 # Clone the repository
-git clone https://github.com/vidyutraj/Vidyut-Portfolio.git
-cd Vidyut-Portfolio
+git clone https://github.com/vidyutraj/vidyutraj.github.io.git
+cd vidyutraj.github.io
 
 # Install dependencies
 npm install
@@ -142,7 +142,7 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ## 🔗 Links
 
-- **Portfolio:** [https://vidyutraj.github.io/Vidyut-Portfolio/](https://vidyutraj.github.io/Vidyut-Portfolio/)
+- **Portfolio:** [https://vidyutraj.github.io/](https://vidyutraj.github.io/)
 - **GitHub:** [@vidyutraj](https://github.com/vidyutraj)
 - **LinkedIn:** [vidyut-rajagopal](https://linkedin.com/in/vidyut-rajagopal)
 - **Medium:** [@vidyut.rajagopal2006](https://medium.com/@vidyut.rajagopal2006)
