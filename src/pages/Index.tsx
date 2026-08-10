@@ -1,6 +1,5 @@
 import { Helmet } from 'react-helmet-async';
 import { Navbar } from '@/components/Navbar';
-import { TelemetryBar } from '@/components/TelemetryBar';
 import { Hero } from '@/components/Hero';
 import { About } from '@/components/About';
 import { Projects } from '@/components/Projects';
@@ -21,7 +20,7 @@ const Index = () => {
           content="Personal portfolio of a Georgia Tech Computer Engineering student specializing in cybersecurity, cloud infrastructure, automation, and applied AI. View projects and writing." 
         />
         <meta name="keywords" content="cybersecurity, cloud engineering, Georgia Tech, portfolio, security engineer, DevOps, AWS, automation" />
-        <link rel="canonical" href="https://yourdomain.com" />
+        <link rel="canonical" href="https://vidyutraj.github.io/Vidyut-Portfolio/" />
         
         {/* Open Graph */}
         <meta property="og:title" content="Cybersecurity & Cloud Engineer Portfolio" />
@@ -34,22 +33,21 @@ const Index = () => {
         <meta name="twitter:description" content="Building secure, resilient systems at the intersection of zero-trust infrastructure, cloud automation, and detection engineering." />
       </Helmet>
 
-      <div className="relative min-h-screen bg-background noise-overlay scrollbar-thin">
-        <TelemetryBar />
+      <div className="relative min-h-screen bg-background scrollbar-thin">
         <Navbar />
-                    <main className="overflow-x-hidden">
-                      <Hero />
-                      <About />
-                      <Experience />
-                      <Projects />
-                      <Certifications />
-                      <Leadership />
-                      <Writing />
-                      <Contact />
-                    </main>
-                    <Footer />
-                    <FloatingChatbot />
-                  </div>
+        <main className="overflow-x-hidden">
+          <Hero />
+          <About />
+          <Experience />
+          <Projects />
+          <Certifications />
+          <Leadership />
+          <Writing />
+          <Contact />
+        </main>
+        <Footer />
+        <FloatingChatbot />
+      </div>
     </>
   );
 };

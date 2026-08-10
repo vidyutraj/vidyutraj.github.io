@@ -8,10 +8,13 @@ A modern, responsive portfolio website showcasing my work in cybersecurity, clou
 
 ## ✨ Features
 
-- **Modern UI/UX** - Dark theme with terminal-inspired design
+- **Modern UI/UX** - Dark, material design system with a size-specific type scale
+- **Fluid Motion** - Spring-based, interruptible animations with velocity handoff
+- **Gesture-Driven** - Drag-to-dismiss nav and assistant sheets, swipeable project cards
 - **AI-Powered Chatbot** - Interactive portfolio assistant powered by Groq AI
 - **Secure Architecture** - API keys stored server-side via Cloudflare Workers
 - **Responsive Design** - Optimized for all devices
+- **Accessible** - Honors reduced-motion, reduced-transparency, and increased-contrast
 - **Performance Optimized** - Fast loading with Vite build system
 - **SEO Friendly** - Proper meta tags and semantic HTML
 
@@ -94,8 +97,9 @@ All portfolio content is in `src/data/`:
 
 ### Styling
 
-- Global styles: `src/index.css`
-- Theme configuration: `tailwind.config.ts`
+- Design tokens (colour, materials, elevation) and component classes: `src/index.css`
+- Type scale, colours, and shadows exposed to Tailwind: `tailwind.config.ts`
+- Motion vocabulary (spring presets, momentum projection, rubber-banding): `src/lib/motion.ts`
 - Component styles: Tailwind classes in component files
 
 ## 🚢 Deployment

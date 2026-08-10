@@ -1,91 +1,99 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /*
-  Design system — "Signal"
-  A cinematic, engineered aesthetic. Deep obsidian background with a single
-  restrained accent (ion). Depth comes from lighting, layering, and type —
-  never from decoration.
+  Design system — dark, material, typographic.
+
+  Depth comes from lighting, layering, and type. There is one accent and one
+  light source. Nothing here decorates: if an element doesn't carry meaning or
+  create hierarchy, it isn't in this file.
 */
 
 @layer base {
   :root {
-    /* Obsidian backdrop — near-black with a subtle cool tilt */
-    --background: 220 20% 4%;
-    --foreground: 210 25% 96%;
+    /* Graphite ground — near-neutral, a hair cool so it doesn't read brown */
+    --background: 240 4% 5%;
+    --foreground: 0 0% 98%;
 
-    /* Surfaces — lifted panels with barely-there glow */
-    --card: 220 18% 6%;
-    --card-foreground: 210 25% 96%;
-    --popover: 220 18% 7%;
-    --popover-foreground: 210 25% 96%;
+    /* Elevation is translucency over the ground, not a separate hue */
+    --card: 240 4% 8%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 4% 11%;
+    --popover-foreground: 0 0% 98%;
 
-    /* Ion — the single accent. Electric cyan shifted slightly toward blue
-       so it reads as 'engineered light' rather than 'gamer neon' */
-    --primary: 190 95% 60%;
-    --primary-foreground: 220 25% 5%;
+    /* The single accent */
+    --primary: 211 100% 58%;
+    --primary-foreground: 0 0% 100%;
 
-    /* Secondary surfaces */
-    --secondary: 220 15% 11%;
-    --secondary-foreground: 210 20% 88%;
+    --secondary: 240 4% 13%;
+    --secondary-foreground: 0 0% 92%;
 
-    /* Muted — for supporting copy and dividers */
-    --muted: 220 15% 9%;
-    --muted-foreground: 215 15% 60%;
+    --muted: 240 4% 12%;
+    --muted-foreground: 240 4% 64%;
 
-    /* Accent — mint-teal for secondary signals */
-    --accent: 170 75% 55%;
-    --accent-foreground: 220 25% 5%;
+    /* `accent` is shadcn's hover/active surface, not a second brand colour */
+    --accent: 240 4% 15%;
+    --accent-foreground: 0 0% 98%;
 
-    --destructive: 0 70% 55%;
-    --destructive-foreground: 210 20% 98%;
+    --destructive: 3 84% 58%;
+    --destructive-foreground: 0 0% 100%;
 
-    /* Borders — nearly invisible, discovered on hover */
-    --border: 220 15% 14%;
-    --input: 220 15% 12%;
-    --ring: 190 95% 60%;
+    --success: 142 62% 45%;
 
-    --radius: 0.875rem;
+    --border: 240 4% 17%;
+    --input: 240 4% 19%;
+    --ring: 211 100% 58%;
 
-    /* Atmospheric tokens */
-    --glow-primary: 190 95% 60%;
-    --glow-accent: 170 75% 55%;
-    --terminal-green: 160 70% 55%;
-    --terminal-amber: 35 90% 60%;
+    --radius: 0.75rem;
 
-    --sidebar-background: 220 18% 5%;
-    --sidebar-foreground: 210 20% 85%;
-    --sidebar-primary: 190 95% 60%;
-    --sidebar-primary-foreground: 220 25% 5%;
-    --sidebar-accent: 220 15% 10%;
-    --sidebar-accent-foreground: 210 20% 85%;
-    --sidebar-border: 220 15% 13%;
-    --sidebar-ring: 190 95% 60%;
+    /*
+      Materials. Weight encodes hierarchy: thicker separates structural
+      regions, thinner draws attention to interactive elements. Never stack
+      one translucent surface directly on another.
+    */
+    --material-regular: 240 4% 8% / 0.72;
+    --material-thick: 240 4% 6% / 0.86;
+
+    /* Ambient + key shadow pairs, plus a hairline to define the edge */
+    --shadow-1: 0 1px 2px hsl(0 0% 0% / 0.4), 0 0 0 0.5px hsl(0 0% 100% / 0.05);
+    --shadow-2: 0 4px 14px -3px hsl(0 0% 0% / 0.5), 0 0 0 0.5px hsl(0 0% 100% / 0.06);
+    --shadow-3: 0 14px 36px -10px hsl(0 0% 0% / 0.6), 0 0 0 0.5px hsl(0 0% 100% / 0.07);
+    --shadow-4: 0 28px 70px -20px hsl(0 0% 0% / 0.72), 0 0 0 0.5px hsl(0 0% 100% / 0.08);
+
+    --sidebar-background: 240 4% 6%;
+    --sidebar-foreground: 0 0% 88%;
+    --sidebar-primary: 211 100% 58%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 4% 12%;
+    --sidebar-accent-foreground: 0 0% 92%;
+    --sidebar-border: 240 4% 16%;
+    --sidebar-ring: 211 100% 58%;
   }
 
+  /* Dark is the only theme; `.dark` mirrors :root so shadcn primitives agree. */
   .dark {
-    --background: 220 20% 4%;
-    --foreground: 210 25% 96%;
-    --card: 220 18% 6%;
-    --card-foreground: 210 25% 96%;
-    --popover: 220 18% 7%;
-    --popover-foreground: 210 25% 96%;
-    --primary: 190 95% 60%;
-    --primary-foreground: 220 25% 5%;
-    --secondary: 220 15% 11%;
-    --secondary-foreground: 210 20% 88%;
-    --muted: 220 15% 9%;
-    --muted-foreground: 215 15% 60%;
-    --accent: 170 75% 55%;
-    --accent-foreground: 220 25% 5%;
-    --destructive: 0 70% 55%;
-    --destructive-foreground: 210 20% 98%;
-    --border: 220 15% 14%;
-    --input: 220 15% 12%;
-    --ring: 190 95% 60%;
+    --background: 240 4% 5%;
+    --foreground: 0 0% 98%;
+    --card: 240 4% 8%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 4% 11%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 211 100% 58%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 4% 13%;
+    --secondary-foreground: 0 0% 92%;
+    --muted: 240 4% 12%;
+    --muted-foreground: 240 4% 64%;
+    --accent: 240 4% 15%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 3 84% 58%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 240 4% 17%;
+    --input: 240 4% 19%;
+    --ring: 211 100% 58%;
   }
 }
 
@@ -94,19 +102,26 @@
     @apply border-border;
   }
 
+  /*
+    Percentage root size so the whole layout scales with the reader's text
+    setting — spacing throughout is rem/em, never fixed px.
+  */
   html {
+    font-size: 100%;
     scroll-behavior: smooth;
-    /* Anchor scroll offset accounts for telemetry bar (24px) + nav (56px) + breathing room */
-    scroll-padding-top: 6rem;
+    scroll-padding-top: 5.5rem;
   }
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
-    font-feature-settings: "rlig" 1, "calt" 1, "ss01" 1;
-    letter-spacing: -0.01em;
-    background-image:
-      radial-gradient(ellipse 80% 50% at 50% -10%, hsl(var(--primary) / 0.10), transparent 60%),
-      radial-gradient(ellipse 60% 40% at 100% 20%, hsl(var(--accent) / 0.05), transparent 60%);
+    font-optical-sizing: auto;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    /* One soft light source, high and slightly left. Static — nothing drifts. */
+    background-image: radial-gradient(
+      ellipse 90% 55% at 50% -15%,
+      hsl(var(--primary) / 0.09),
+      transparent 65%
+    );
     background-attachment: fixed;
   }
 
@@ -114,382 +129,202 @@
     @apply bg-primary/30 text-foreground;
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    letter-spacing: -0.03em;
-  }
-
-  /* Serif accent for display emphasis */
-  .font-display {
-    font-family: 'Instrument Serif', 'Times New Roman', serif;
-    font-style: italic;
-    letter-spacing: -0.02em;
+  /* Focus is a first-class state, not an afterthought */
+  :focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+    border-radius: calc(var(--radius) - 6px);
   }
 }
 
 @layer components {
-  /* Eyebrow — numbered section label */
+  /* Small text earns a little tracking; large text gives it back */
   .eyebrow {
-    @apply font-mono text-[11px] uppercase tracking-[0.25em] text-muted-foreground;
+    @apply font-sans text-eyebrow font-medium uppercase text-muted-foreground;
   }
 
-  /* Precision dot grid — used sparingly as atmospheric texture */
-  .grid-pattern {
-    background-image:
-      radial-gradient(circle at 1px 1px, hsl(var(--foreground) / 0.06) 1px, transparent 0);
-    background-size: 32px 32px;
+  /*
+    Translucent chrome. Content scrolls underneath rather than being clipped by
+    an opaque strip. The bright top edge is light catching the material.
+  */
+  .material-bar {
+    background: hsl(var(--material-regular));
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-top: 1px solid hsl(0 0% 100% / 0.06);
   }
 
-  /* Hex grid — engineered systems geometry */
-  .hex-pattern {
-    background-image: url("data:image/svg+xml,%3Csvg width='56' height='100' viewBox='0 0 56 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M28 0L56 16.18v32.36L28 64.72 0 48.54V16.18L28 0zm0 50L56 66.18v32.36L28 114.72 0 98.54V66.18L28 50z' fill='none' stroke='white' stroke-opacity='0.04' stroke-width='1'/%3E%3C/svg%3E");
-    background-size: 56px 100px;
+  /* Bigger surfaces read as thicker: more blur, deeper shadow. */
+  .material-sheet {
+    background: hsl(var(--material-thick));
+    backdrop-filter: blur(32px) saturate(180%);
+    -webkit-backdrop-filter: blur(32px) saturate(180%);
+    box-shadow: var(--shadow-4);
+    border: 1px solid hsl(0 0% 100% / 0.08);
   }
 
-  /* Circuit trace — horizontal engineered lines, used as accent strip */
-  .circuit-pattern {
-    background-image:
-      linear-gradient(90deg, transparent 0%, hsl(var(--foreground) / 0.05) 50%, transparent 100%),
-      repeating-linear-gradient(
-        90deg,
-        transparent 0,
-        transparent 40px,
-        hsl(var(--primary) / 0.08) 40px,
-        hsl(var(--primary) / 0.08) 41px,
-        transparent 41px,
-        transparent 120px
-      );
+  /*
+    Text over a blurred, shifting backdrop needs more contrast and a touch more
+    weight than text on a solid panel, or it dissolves into whatever is behind.
+  */
+  .vibrant {
+    @apply text-foreground/90 font-medium;
+    letter-spacing: 0.005em;
   }
 
-  /* Telemetry strip — monospace meta row */
-  .telemetry-strip {
-    @apply flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70;
-  }
-
-  .telemetry-strip > span:not(:last-child)::after {
-    content: '';
-    display: inline-block;
-    width: 3px;
-    height: 3px;
-    background: currentColor;
-    opacity: 0.4;
-    border-radius: 50%;
-    margin-left: 12px;
-    vertical-align: middle;
-  }
-
-  /* Mono meta — inline label/value pair */
-  .mono-meta {
-    @apply font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground/70;
-  }
-
-  /* Status dots — alert-state signals */
-  .status-ok {
-    @apply inline-block w-1.5 h-1.5 rounded-full bg-terminal-green;
-    box-shadow: 0 0 6px hsl(var(--terminal-green) / 0.8);
-  }
-
-  .status-warn {
-    @apply inline-block w-1.5 h-1.5 rounded-full bg-terminal-amber;
-    box-shadow: 0 0 6px hsl(var(--terminal-amber) / 0.6);
-  }
-
-  .status-info {
-    @apply inline-block w-1.5 h-1.5 rounded-full bg-primary;
-    box-shadow: 0 0 6px hsl(var(--primary) / 0.8);
-  }
-
-  /* Crosshair — corner precision marker */
-  .crosshair {
-    @apply absolute w-4 h-4 pointer-events-none;
-  }
-
-  .crosshair::before,
-  .crosshair::after {
-    content: '';
-    position: absolute;
-    background: hsl(var(--primary) / 0.5);
-  }
-
-  .crosshair::before {
-    width: 100%;
-    height: 1px;
-    top: 50%;
-  }
-
-  .crosshair::after {
-    height: 100%;
-    width: 1px;
-    left: 50%;
-  }
-
-  /* Telemetry sweep — very slow single-pass scan line for atmosphere */
-  .telemetry-sweep {
-    position: relative;
-    overflow: hidden;
-  }
-
-  .telemetry-sweep::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      180deg,
-      transparent 0%,
-      hsl(var(--primary) / 0.03) 48%,
-      hsl(var(--primary) / 0.08) 50%,
-      hsl(var(--primary) / 0.03) 52%,
-      transparent 100%
-    );
-    pointer-events: none;
-    animation: telemetry-sweep 12s linear infinite;
-  }
-
-  @keyframes telemetry-sweep {
-    0% { transform: translateY(-100%); }
-    100% { transform: translateY(100%); }
-  }
-
-  /* Noise overlay — 1% opacity film grain for cinematic depth */
-  .noise-overlay {
-    position: relative;
-  }
-
-  .noise-overlay::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-    opacity: 0.025;
-    pointer-events: none;
-    z-index: 1;
-    mix-blend-mode: overlay;
-  }
-
-  /* Luminous surfaces — subtle lift with inner light */
+  /* Opaque, non-translucent panel — safe to nest inside a material surface. */
   .surface {
-    @apply relative bg-card/60 backdrop-blur-xl border border-border/70;
-    background-image: linear-gradient(
-      180deg,
-      hsl(var(--foreground) / 0.02) 0%,
-      transparent 50%
-    );
+    @apply relative rounded-xl border border-border/70 bg-card;
+    box-shadow: var(--shadow-1);
   }
 
   .surface-interactive {
-    @apply surface transition-all duration-500 ease-out;
+    @apply surface;
+    transition:
+      border-color 200ms ease-out,
+      box-shadow 200ms ease-out,
+      background-color 200ms ease-out;
   }
 
   .surface-interactive:hover {
-    @apply border-primary/30;
-    background-image: linear-gradient(
-      180deg,
-      hsl(var(--primary) / 0.04) 0%,
-      transparent 60%
-    );
-    box-shadow:
-      0 0 0 1px hsl(var(--primary) / 0.08),
-      0 20px 60px -20px hsl(var(--primary) / 0.12),
-      inset 0 1px 0 0 hsl(var(--foreground) / 0.04);
+    @apply border-border bg-card/80;
+    box-shadow: var(--shadow-3);
   }
 
-  /* Hairline — ultra-thin dividers */
-  .hairline {
-    @apply h-px bg-gradient-to-r from-transparent via-border to-transparent;
-  }
-
-  .hairline-vertical {
-    @apply w-px bg-gradient-to-b from-transparent via-border to-transparent;
-  }
-
-  /* Glow — restrained, one accent only */
-  .glow-primary {
-    box-shadow:
-      0 0 0 1px hsl(var(--primary) / 0.2),
-      0 0 40px hsl(var(--primary) / 0.15);
-  }
-
-  .text-glow {
-    text-shadow: 0 0 24px hsl(var(--primary) / 0.35);
-  }
-
-  /* Chip — refined tech badge */
+  /* Small label token. Flat by design — it sits inside other surfaces. */
   .chip {
-    @apply inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-mono font-medium
-           bg-foreground/[0.04] text-foreground/80 rounded-full border border-border/60
-           transition-all duration-300;
+    @apply inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border
+           border-border/60 bg-foreground/[0.05] px-2.5 py-1 text-caption font-medium
+           text-foreground/75;
   }
 
-  .chip:hover {
-    @apply border-primary/40 text-primary bg-primary/[0.06];
+  .hairline {
+    @apply h-px w-full bg-border/70;
   }
 
-  /* Shimmer — used on hover lines */
-  .shimmer-line {
-    background: linear-gradient(
-      90deg,
-      transparent,
-      hsl(var(--primary) / 0.5),
-      transparent
-    );
-    background-size: 200% 100%;
-    animation: shimmer-sweep 2s linear infinite;
+  /* Live status. The only remaining indicator dot — it reports a real fact. */
+  .status-live {
+    @apply inline-block h-1.5 w-1.5 rounded-full bg-success;
   }
 
-  @keyframes shimmer-sweep {
-    0% { background-position: -200% 0; }
-    100% { background-position: 200% 0; }
+  /*
+    Press feedback. `:active` fires on pointer-DOWN, which is the point — the
+    moment you wait for `click` to acknowledge a press, directness falls off a
+    cliff. Transform gets its own short duration; colour and depth are slower.
+  */
+  .press {
+    transition:
+      transform 100ms ease-out,
+      background-color 200ms ease-out,
+      border-color 200ms ease-out,
+      box-shadow 200ms ease-out,
+      color 200ms ease-out,
+      opacity 200ms ease-out;
   }
 
-  /* Pill — numbered section tag */
-  .section-tag {
-    @apply inline-flex items-center gap-2 px-3 py-1.5 rounded-full
-           border border-border/70 bg-card/60 backdrop-blur-sm
-           font-mono text-[11px] tracking-[0.2em] uppercase text-muted-foreground;
+  .press:active:not(:disabled) {
+    transform: scale(0.97);
   }
 
-  .section-tag-dot {
-    @apply w-1.5 h-1.5 rounded-full bg-primary;
-    box-shadow: 0 0 8px hsl(var(--primary) / 0.8);
+  /* For large targets, where a 3% scale reads as a glitch rather than a press */
+  .press-soft:active:not(:disabled) {
+    transform: scale(0.99);
   }
 }
 
 @layer utilities {
+  /* Reserved for display headings — a light falloff, not a colour gradient. */
+  .gradient-text {
+    background: linear-gradient(180deg, hsl(var(--foreground)) 0%, hsl(var(--foreground) / 0.68) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
   .scrollbar-thin {
     scrollbar-width: thin;
-    scrollbar-color: hsl(var(--primary) / 0.3) transparent;
+    scrollbar-color: hsl(0 0% 100% / 0.16) transparent;
   }
 
-  .scrollbar-thin::-webkit-scrollbar { width: 6px; height: 6px; }
-  .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
   .scrollbar-thin::-webkit-scrollbar-thumb {
-    background: hsl(var(--primary) / 0.25);
+    background: hsl(0 0% 100% / 0.16);
     border-radius: 3px;
   }
-  .scrollbar-thin::-webkit-scrollbar-thumb:hover { background: hsl(var(--primary) / 0.5); }
 
-  /* Gradient masks — for fading edges */
-  .mask-fade-b {
-    mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: hsl(0 0% 100% / 0.28);
   }
 
-  .mask-fade-y {
-    mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
+  /* Draggable surfaces must not fight the browser's own gesture handling */
+  .drag-y {
+    touch-action: pan-x;
   }
 
-  /* Gradient text — reserved for select display headings */
-  .gradient-text {
-    background: linear-gradient(180deg, hsl(var(--foreground)) 0%, hsl(var(--foreground) / 0.6) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .gradient-text-accent {
-    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  /* Animated gradient border — for primary CTAs */
-  .gradient-border {
-    position: relative;
-    background: hsl(var(--card));
-  }
-
-  .gradient-border::before {
-    content: '';
-    position: absolute;
-    inset: -1px;
-    border-radius: inherit;
-    padding: 1px;
-    background: conic-gradient(
-      from 0deg,
-      hsl(var(--primary) / 0.6),
-      hsl(var(--accent) / 0.4),
-      hsl(var(--primary) / 0) 40%,
-      hsl(var(--primary) / 0) 60%,
-      hsl(var(--primary) / 0.6)
-    );
-    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
-  }
-
-  /* Aurora — used in hero only */
-  .aurora {
-    position: absolute;
-    inset: 0;
-    overflow: hidden;
-    pointer-events: none;
-  }
-
-  .aurora::before,
-  .aurora::after {
-    content: '';
-    position: absolute;
-    width: 60vw;
-    height: 60vw;
-    border-radius: 50%;
-    filter: blur(80px);
-    opacity: 0.35;
-  }
-
-  .aurora::before {
-    top: -20vw;
-    left: -10vw;
-    background: radial-gradient(circle, hsl(var(--primary) / 0.6), transparent 60%);
-    animation: aurora-drift-a 22s ease-in-out infinite;
-  }
-
-  .aurora::after {
-    bottom: -20vw;
-    right: -10vw;
-    background: radial-gradient(circle, hsl(var(--accent) / 0.4), transparent 60%);
-    animation: aurora-drift-b 28s ease-in-out infinite;
-  }
-
-  @keyframes aurora-drift-a {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    50% { transform: translate(10vw, 5vw) scale(1.1); }
-  }
-
-  @keyframes aurora-drift-b {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    50% { transform: translate(-8vw, -4vw) scale(0.95); }
-  }
-
-  /* Subtle pulse for indicators */
-  .pulse-dot {
-    position: relative;
-  }
-
-  .pulse-dot::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background: inherit;
-    animation: pulse-ring 2s ease-out infinite;
-    opacity: 0;
-  }
-
-  @keyframes pulse-ring {
-    0% { transform: scale(1); opacity: 0.6; }
-    100% { transform: scale(2.5); opacity: 0; }
+  .drag-x {
+    touch-action: pan-y;
   }
 }
 
-/* Reduced motion */
+/*
+  Three independent accessibility signals. Reduced motion is not "no feedback" —
+  it's a non-vestibular equivalent, so opacity and colour still communicate.
+*/
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+    transition-duration: 150ms !important;
+    transition-property: opacity, background-color, border-color, color !important;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .material-bar,
+  .material-sheet {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .material-bar {
+    background: hsl(var(--background));
+  }
+
+  .material-sheet {
+    background: hsl(var(--card));
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --border: 240 4% 34%;
+    --muted-foreground: 240 4% 78%;
+  }
+
+  .material-bar,
+  .material-sheet {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: hsl(var(--background));
+    border: 1px solid hsl(var(--border));
+  }
+
+  .chip,
+  .surface {
+    border-color: hsl(var(--border));
   }
 }

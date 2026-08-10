@@ -14,9 +14,34 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        mono: ['JetBrains Mono', 'Consolas', 'monospace'],
-        display: ['Instrument Serif', 'Times New Roman', 'serif'],
+        sans: [
+          "-apple-system",
+          "BlinkMacSystemFont",
+          "SF Pro Text",
+          "system-ui",
+          "Inter",
+          "Segoe UI",
+          "sans-serif",
+        ],
+        mono: ["ui-monospace", "SFMono-Regular", "SF Mono", "Menlo", "monospace"],
+      },
+      /**
+       * Tracking and leading are size-specific — never one value for all sizes.
+       * Large text reads too loose as it grows (negative tracking); small text
+       * needs a little air (positive tracking). Encoding both in the scale means
+       * a class can't carry the wrong pair.
+       */
+      fontSize: {
+        "display-xl": ["clamp(2.5rem, 6vw, 4.5rem)", { lineHeight: "1.03", letterSpacing: "-0.035em" }],
+        display: ["clamp(2rem, 4.5vw, 3.25rem)", { lineHeight: "1.06", letterSpacing: "-0.03em" }],
+        "display-sm": ["clamp(1.75rem, 3vw, 2.25rem)", { lineHeight: "1.12", letterSpacing: "-0.025em" }],
+        title: ["1.5rem", { lineHeight: "1.2", letterSpacing: "-0.02em" }],
+        "title-sm": ["1.1875rem", { lineHeight: "1.3", letterSpacing: "-0.015em" }],
+        "body-lg": ["1.125rem", { lineHeight: "1.6", letterSpacing: "-0.01em" }],
+        body: ["1rem", { lineHeight: "1.6", letterSpacing: "-0.005em" }],
+        "body-sm": ["0.9375rem", { lineHeight: "1.55", letterSpacing: "0" }],
+        caption: ["0.8125rem", { lineHeight: "1.45", letterSpacing: "0.005em" }],
+        eyebrow: ["0.75rem", { lineHeight: "1.3", letterSpacing: "0.06em" }],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -52,14 +77,7 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        terminal: {
-          green: "hsl(var(--terminal-green))",
-          amber: "hsl(var(--terminal-amber))",
-        },
-        glow: {
-          primary: "hsl(var(--glow-primary))",
-          accent: "hsl(var(--glow-accent))",
-        },
+        success: "hsl(var(--success))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
@@ -73,8 +91,17 @@ export default {
       },
       borderRadius: {
         lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        md: "calc(var(--radius) - 4px)",
+        sm: "calc(var(--radius) - 8px)",
+        xl: "calc(var(--radius) + 6px)",
+        "2xl": "calc(var(--radius) + 12px)",
+      },
+      /** Ambient + key shadow pairs. Depth comes from light, not from glow. */
+      boxShadow: {
+        e1: "var(--shadow-1)",
+        e2: "var(--shadow-2)",
+        e3: "var(--shadow-3)",
+        e4: "var(--shadow-4)",
       },
       keyframes: {
         "accordion-down": {
@@ -85,70 +112,10 @@ export default {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
-        "fade-in": {
-          "0%": { opacity: "0", transform: "translateY(20px)" },
-          "100%": { opacity: "1", transform: "translateY(0)" },
-        },
-        "fade-in-left": {
-          "0%": { opacity: "0", transform: "translateX(-20px)" },
-          "100%": { opacity: "1", transform: "translateX(0)" },
-        },
-        "fade-in-right": {
-          "0%": { opacity: "0", transform: "translateX(20px)" },
-          "100%": { opacity: "1", transform: "translateX(0)" },
-        },
-        "glow-pulse": {
-          "0%, 100%": { boxShadow: "0 0 20px hsl(var(--glow-primary) / 0.3)" },
-          "50%": { boxShadow: "0 0 30px hsl(var(--glow-primary) / 0.5)" },
-        },
-        "typing": {
-          "0%": { width: "0" },
-          "100%": { width: "100%" },
-        },
-        "blink": {
-          "0%, 50%": { opacity: "1" },
-          "51%, 100%": { opacity: "0" },
-        },
-        "float": {
-          "0%, 100%": { transform: "translateY(0)" },
-          "50%": { transform: "translateY(-10px)" },
-        },
-        "scan": {
-          "0%": { transform: "translateY(-100%)" },
-          "100%": { transform: "translateY(100vh)" },
-        },
-        "wiggle": {
-          "0%, 100%": { transform: "rotate(-3deg)" },
-          "50%": { transform: "rotate(3deg)" },
-        },
-        "shimmer": {
-          "0%": { backgroundPosition: "-200% 0" },
-          "100%": { backgroundPosition: "200% 0" },
-        },
-        "bounce-slow": {
-          "0%, 100%": { transform: "translateY(0)" },
-          "50%": { transform: "translateY(-10px)" },
-        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "fade-in": "fade-in 0.6s ease-out forwards",
-        "fade-in-left": "fade-in-left 0.6s ease-out forwards",
-        "fade-in-right": "fade-in-right 0.6s ease-out forwards",
-        "glow-pulse": "glow-pulse 2s ease-in-out infinite",
-        "typing": "typing 2s steps(30) forwards",
-        "blink": "blink 1s step-end infinite",
-        "float": "float 3s ease-in-out infinite",
-        "scan": "scan 8s linear infinite",
-        "wiggle": "wiggle 1s ease-in-out infinite",
-        "shimmer": "shimmer 3s linear infinite",
-        "bounce-slow": "bounce-slow 2s ease-in-out infinite",
-      },
-      backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
-        'hero-gradient': 'radial-gradient(ellipse at top, hsl(var(--primary) / 0.08) 0%, transparent 60%)',
       },
     },
   },

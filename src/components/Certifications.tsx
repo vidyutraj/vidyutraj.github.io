@@ -1,54 +1,50 @@
 import { AnimatedSection, StaggerContainer, StaggerItem } from '@/components/AnimatedSection';
 import { SectionHeader } from '@/components/SectionHeader';
-import { Calendar, Award, ExternalLink } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 import { certifications } from '@/data/certifications';
 
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
 const formatDate = (dateStr: string): string => {
-  const date = new Date(dateStr + '-01');
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  return `${months[date.getMonth()]} ${date.getFullYear()}`;
+  const date = new Date(`${dateStr}-01`);
+  return `${MONTHS[date.getMonth()]} ${date.getFullYear()}`;
 };
 
-const formatDateRange = (issueDate: string, expirationDate: string | null | undefined): string => {
-  if (!expirationDate) return `Issued ${formatDate(issueDate)} · No expiration`;
-  return `Issued ${formatDate(issueDate)} · Expires ${formatDate(expirationDate)}`;
-};
+const formatDateRange = (issueDate: string, expirationDate: string | null | undefined): string =>
+  expirationDate
+    ? `Issued ${formatDate(issueDate)} · Expires ${formatDate(expirationDate)}`
+    : `Issued ${formatDate(issueDate)} · No expiration`;
 
 export const Certifications = () => {
-  const sortedCertifications = [...certifications].sort((a, b) => {
-    const aDate = new Date(a.issueDate + '-01').getTime();
-    const bDate = new Date(b.issueDate + '-01').getTime();
-    return bDate - aDate;
-  });
+  const sorted = [...certifications].sort(
+    (a, b) => new Date(`${b.issueDate}-01`).getTime() - new Date(`${a.issueDate}-01`).getTime(),
+  );
 
   return (
-    <section id="certifications" className="relative py-32 md:py-40">
-      <div className="container px-6 md:px-10 max-w-7xl">
+    <section id="certifications" className="relative py-28 md:py-36">
+      <div className="container max-w-6xl px-6 md:px-10">
         <AnimatedSection>
           <SectionHeader
-            index="04"
             kicker="Credentials"
             title="Certifications"
-            meta={`${certifications.length} verified`}
             description="The pieces of paper that prove I can actually do what I say I can do. Continuously learning and adding to the collection."
           />
         </AnimatedSection>
 
-        {sortedCertifications.length === 0 ? (
-          <AnimatedSection delay={0.1}>
-            <p className="text-muted-foreground text-center py-16">No certifications yet.</p>
+        {sorted.length === 0 ? (
+          <AnimatedSection delay={0.06}>
+            <p className="py-16 text-center text-body text-muted-foreground">
+              No certifications yet.
+            </p>
           </AnimatedSection>
         ) : (
-          <StaggerContainer
-            className="grid md:grid-cols-2 gap-5 mt-20"
-            staggerDelay={0.08}
-          >
-            {sortedCertifications.map((cert, index) => (
+          <StaggerContainer className="mt-14 grid gap-4 md:grid-cols-2">
+            {sorted.map((cert, index) => (
               <StaggerItem key={`${cert.name}-${cert.issuer}-${index}`}>
-                <div className="surface-interactive p-7 md:p-8 rounded-2xl group h-full flex flex-col">
-                  <div className="flex items-start gap-5 mb-5">
+                <article className="surface-interactive group flex h-full flex-col rounded-2xl p-7">
+                  <div className="mb-5 flex items-start gap-4">
                     {cert.logo && (
-                      <div className="flex-shrink-0 w-14 h-14 rounded-xl bg-white dark:bg-card/60 border border-border/60 p-2 flex items-center justify-center">
+                      <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl border border-border bg-white p-2">
                         <img
                           src={
                             cert.logo.startsWith('http')
@@ -57,37 +53,29 @@ export const Certifications = () => {
                                   cert.logo.startsWith('/') ? cert.logo.slice(1) : cert.logo
                                 }`
                           }
-                          alt={cert.logoAlt || `${cert.issuer} logo`}
-                          className="w-full h-full object-contain"
+                          alt=""
+                          className="h-full w-full object-contain"
                         />
                       </div>
                     )}
 
-                    <div className="flex-grow min-w-0">
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="min-w-0">
-                          <h3 className="text-lg font-semibold text-foreground mb-1 leading-tight tracking-tight group-hover:text-primary transition-colors duration-500">
-                            {cert.name}
-                          </h3>
-                          <p className="text-sm text-muted-foreground">{cert.issuer}</p>
-                        </div>
-                        <Award className="w-4 h-4 text-muted-foreground/60 flex-shrink-0 mt-1" />
-                      </div>
+                    <div className="min-w-0 flex-grow">
+                      <h3 className="mb-1 text-title-sm font-semibold text-foreground">
+                        {cert.name}
+                      </h3>
+                      <p className="text-body-sm text-muted-foreground">{cert.issuer}</p>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground/80 mb-4">
-                    <Calendar className="w-3 h-3" />
-                    <span className="font-mono">
-                      {formatDateRange(cert.issueDate, cert.expirationDate)}
-                    </span>
-                  </div>
+                  <p className="text-caption text-muted-foreground">
+                    {formatDateRange(cert.issueDate, cert.expirationDate)}
+                  </p>
 
                   {(cert.credentialId || cert.credentialUrl) && (
-                    <div className="mt-auto pt-4 border-t border-border/50">
+                    <div className="mt-auto border-t border-border/60 pt-4">
                       {cert.credentialId && (
-                        <p className="text-[10px] text-muted-foreground/70 mb-2 font-mono tracking-wide">
-                          ID: {cert.credentialId}
+                        <p className="mb-2 font-mono text-caption text-muted-foreground/70">
+                          ID {cert.credentialId}
                         </p>
                       )}
                       {cert.credentialUrl && (
@@ -95,15 +83,15 @@ export const Certifications = () => {
                           href={cert.credentialUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-primary transition-colors"
+                          className="press inline-flex items-center gap-1.5 text-caption font-medium text-muted-foreground hover:text-primary"
                         >
                           Verify credential
-                          <ExternalLink className="w-3 h-3" />
+                          <ExternalLink className="h-3 w-3" />
                         </a>
                       )}
                     </div>
                   )}
-                </div>
+                </article>
               </StaggerItem>
             ))}
           </StaggerContainer>
