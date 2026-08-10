@@ -3,39 +3,37 @@ import { Button } from '@/components/ui/button';
 import { Github, Linkedin, ChevronDown, BookOpen, ArrowUpRight } from 'lucide-react';
 import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
 import { personalInfo } from '@/data/personal';
-
-const EASE = [0.16, 1, 0.3, 1] as const;
+import { useTransitions } from '@/lib/motion';
 
 export const Hero = () => {
   const containerRef = useRef<HTMLElement>(null);
   const portraitRef = useRef<HTMLDivElement>(null);
+  const t = useTransitions();
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end start'],
   });
 
-  // Parallax layers
-  const bgY = useTransform(scrollYProgress, [0, 1], ['0%', '30%']);
-  const contentY = useTransform(scrollYProgress, [0, 1], ['0%', '15%']);
-  const contentOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
+  // A single, shallow depth cue. Large surfaces fade as they leave rather than
+  // sliding a full-viewport background around behind the text.
+  const contentY = useTransform(scrollYProgress, [0, 1], ['0%', '8%']);
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.75], [1, 0]);
 
-  // Magnetic portrait — follows cursor subtly
+  // Critically damped cursor tracking — the portrait leans, it doesn't wobble.
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
-  const springX = useSpring(mouseX, { stiffness: 120, damping: 20 });
-  const springY = useSpring(mouseY, { stiffness: 120, damping: 20 });
+  const springX = useSpring(mouseX, { stiffness: 200, damping: 30, mass: 1 });
+  const springY = useSpring(mouseY, { stiffness: 200, damping: 30, mass: 1 });
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!portraitRef.current) return;
+    if (!portraitRef.current || t.reduced) return;
     const rect = portraitRef.current.getBoundingClientRect();
-    const x = (e.clientX - rect.left - rect.width / 2) / 20;
-    const y = (e.clientY - rect.top - rect.height / 2) / 20;
-    mouseX.set(x);
-    mouseY.set(y);
+    mouseX.set((e.clientX - rect.left - rect.width / 2) / 26);
+    mouseY.set((e.clientY - rect.top - rect.height / 2) / 26);
   };
 
-  const handleMouseLeave = () => {
+  const resetTilt = () => {
     mouseX.set(0);
     mouseY.set(0);
   };
@@ -43,102 +41,67 @@ export const Hero = () => {
   return (
     <section
       ref={containerRef}
-      className="relative min-h-screen flex items-center overflow-hidden pt-24 pb-20"
+      className="relative flex min-h-screen items-center overflow-hidden pb-24 pt-32"
     >
-      {/* Atmospheric layers */}
       <motion.div
-        style={{ y: bgY }}
-        className="absolute inset-0 pointer-events-none"
+        style={{ y: t.reduced ? 0 : contentY, opacity: contentOpacity }}
+        className="container relative z-10 max-w-6xl px-6 md:px-10"
       >
-        <div className="aurora" />
-        <div className="absolute inset-0 hex-pattern opacity-60 mask-fade-b" />
-        <div className="absolute inset-0 grid-pattern opacity-20 mask-fade-b" />
-      </motion.div>
-
-      {/* Horizontal telemetry rails — circuit traces across the viewport */}
-      <div className="absolute inset-x-0 top-1/4 h-px circuit-pattern opacity-50 pointer-events-none" />
-      <div className="absolute inset-x-0 bottom-1/4 h-px circuit-pattern opacity-30 pointer-events-none" />
-
-      {/* Vignette */}
-      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,transparent_40%,hsl(var(--background))_100%)]" />
-
-      <motion.div
-        style={{ y: contentY, opacity: contentOpacity }}
-        className="container relative z-10 px-6 md:px-10 max-w-7xl"
-      >
-        <div className="grid lg:grid-cols-[1.4fr_1fr] gap-12 lg:gap-20 items-center">
+        <div className="grid items-center gap-14 lg:grid-cols-[1.35fr_1fr] lg:gap-20">
           {/* Text column */}
           <div className="order-2 lg:order-1">
-            {/* Eyebrow — telemetry strip */}
             <motion.div
-              initial={{ opacity: 0, y: 12 }}
+              initial={{ opacity: 0, y: t.reduced ? 0 : 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: EASE }}
-              className="mb-8"
+              transition={t.standard}
+              className="mb-7 flex items-center gap-2.5"
             >
-              <div className="telemetry-strip">
-                <span className="flex items-center gap-1.5">
-                  <span className="status-ok pulse-dot" />
-                  <span className="text-foreground/80">Available</span>
-                </span>
-                <span>{personalInfo.location}</span>
-                <span className="hidden sm:inline">Georgia Tech / CMPE</span>
-              </div>
+              <span className="status-live" />
+              <span className="eyebrow text-foreground/70">
+                Available &nbsp;·&nbsp; {personalInfo.location}
+              </span>
             </motion.div>
 
-            {/* Name — big display */}
             <motion.h1
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: t.reduced ? 0 : 22 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 0.1, ease: EASE }}
-              className="text-[clamp(2.75rem,7.5vw,6.25rem)] font-semibold text-foreground leading-[1.02] tracking-[-0.035em] mb-6 break-words"
+              transition={{ ...t.gentle, delay: 0.05 }}
+              className="gradient-text mb-6 text-display-xl font-semibold"
             >
-              <span className="block gradient-text pb-[0.08em]">
-                {personalInfo.name.split(' ')[0]}
-              </span>
-              <span className="block gradient-text pb-[0.12em]">
-                {personalInfo.name.split(' ').slice(1).join(' ')}
-                <span className="font-display italic text-primary/90 ml-1.5">.</span>
-              </span>
+              {personalInfo.name}
             </motion.h1>
 
-            {/* Title strip */}
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.9, delay: 0.25, ease: EASE }}
-              className="mb-10"
-            >
-              <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-base md:text-lg text-muted-foreground">
-                <span className="text-foreground/90">{personalInfo.title}</span>
-                <span className="w-1 h-1 rounded-full bg-muted-foreground/50" />
-                <span className="text-primary/90 font-medium">{personalInfo.tagline}</span>
-              </div>
-            </motion.div>
-
-            {/* Long description */}
             <motion.p
-              initial={{ opacity: 0, y: 16 }}
+              initial={{ opacity: 0, y: t.reduced ? 0 : 14 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.9, delay: 0.35, ease: EASE }}
-              className="text-base md:text-lg text-muted-foreground leading-relaxed max-w-xl mb-12"
+              transition={{ ...t.gentle, delay: 0.12 }}
+              className="mb-8 text-body-lg text-foreground/70"
             >
-              Building systems, securing infrastructure, and exploring where technology meets impact.
-              When I'm not debugging infrastructure or writing about the latest AWS outage, you'll find me
-              diving deep into hands-on labs and turning complex problems into elegant solutions.
+              {personalInfo.title}
             </motion.p>
 
-            {/* CTA row */}
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
+            <motion.p
+              initial={{ opacity: 0, y: t.reduced ? 0 : 14 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.9, delay: 0.45, ease: EASE }}
-              className="flex flex-col sm:flex-row sm:items-center gap-5 mb-12"
+              transition={{ ...t.gentle, delay: 0.18 }}
+              className="mb-11 max-w-xl text-body text-muted-foreground"
+            >
+              Building systems, securing infrastructure, and exploring where technology meets
+              impact. When I'm not debugging infrastructure or writing about the latest AWS
+              outage, you'll find me diving deep into hands-on labs and turning complex problems
+              into elegant solutions.
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: t.reduced ? 0 : 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ ...t.gentle, delay: 0.24 }}
+              className="mb-12 flex flex-col gap-3 sm:flex-row sm:items-center"
             >
               <Button variant="hero" size="lg" asChild className="group">
                 <a href="#projects">
                   See what I built
-                  <ArrowUpRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  <ArrowUpRight className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </a>
               </Button>
               <Button variant="hero-outline" size="lg" asChild>
@@ -146,16 +109,15 @@ export const Hero = () => {
               </Button>
             </motion.div>
 
-            {/* Socials — inline minimal */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 1, delay: 0.6, ease: EASE }}
-              className="flex items-center gap-6"
+              transition={{ ...t.gentle, delay: 0.32 }}
+              className="flex items-center gap-7"
             >
               {[
-                { icon: Github, label: 'GitHub', url: 'https://github.com/vidyutraj' },
-                { icon: Linkedin, label: 'LinkedIn', url: 'https://linkedin.com/in/vidyut-rajagopal' },
+                { icon: Github, label: 'GitHub', url: personalInfo.social.github },
+                { icon: Linkedin, label: 'LinkedIn', url: personalInfo.social.linkedin },
                 { icon: BookOpen, label: 'Medium', url: personalInfo.social.medium },
               ].map((item) => (
                 <a
@@ -163,114 +125,59 @@ export const Hero = () => {
                   href={item.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group flex items-center gap-2 text-sm font-mono text-muted-foreground hover:text-foreground transition-colors duration-300"
+                  className="press flex items-center gap-2 text-caption text-muted-foreground hover:text-foreground"
                 >
-                  <item.icon className="w-4 h-4 transition-transform duration-300 group-hover:-translate-y-0.5" />
-                  <span className="tracking-wide">{item.label}</span>
+                  <item.icon className="h-4 w-4" />
+                  <span>{item.label}</span>
                 </a>
               ))}
             </motion.div>
           </div>
 
-          {/* Portrait column — floating frame with magnetic cursor tracking */}
+          {/* Portrait */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.94 }}
+            initial={{ opacity: 0, scale: t.reduced ? 1 : 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.2, delay: 0.3, ease: EASE }}
-            className="order-1 lg:order-2 flex justify-center lg:justify-end"
+            transition={{ ...t.gentle, delay: 0.1 }}
+            className="order-1 flex justify-center lg:order-2 lg:justify-end"
           >
             <div
               ref={portraitRef}
               onMouseMove={handleMouseMove}
-              onMouseLeave={handleMouseLeave}
+              onMouseLeave={resetTilt}
               className="relative"
             >
-              {/* Depth rings */}
               <motion.div
                 style={{ x: springX, y: springY }}
-                className="relative w-[280px] h-[360px] md:w-[340px] md:h-[440px] lg:w-[380px] lg:h-[500px]"
+                className="relative h-[340px] w-[268px] overflow-hidden rounded-2xl border border-white/[0.08] shadow-e4 md:h-[420px] md:w-[330px] lg:h-[470px] lg:w-[364px]"
               >
-                {/* Glow halo */}
-                <div className="absolute inset-0 bg-primary/20 blur-[80px] scale-90" />
-
-                {/* Frame */}
-                <div className="relative w-full h-full rounded-[2rem] overflow-hidden border border-border/60 bg-card/40 backdrop-blur-sm telemetry-sweep">
-                  <img
-                    src={`${import.meta.env.BASE_URL}logos/Portrait_Vidyut.jpg`}
-                    alt="Vidyut Rajagopal"
-                    className="w-full h-full object-cover"
-                    style={{ objectPosition: 'center 25%' }}
-                  />
-                  {/* Gradient overlay — deepens corners, adds cinematic feel */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-background/70 via-transparent to-transparent" />
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 mix-blend-overlay" />
-                  {/* Top highlight */}
-                  <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-foreground/20 to-transparent" />
-
-                  {/* Bottom telemetry overlay — coordinates & identifier */}
-                  <div className="absolute bottom-0 left-0 right-0 p-4 font-mono text-[9px] tracking-[0.22em] uppercase text-foreground/70 flex items-center justify-between">
-                    <span className="flex items-center gap-1.5">
-                      <span className="status-info" />
-                      <span>Subject</span>
-                    </span>
-                    <span className="text-muted-foreground/80">VR · 33.78°N</span>
-                  </div>
-                </div>
-
-                {/* Corner crosshairs — precision markers */}
-                <span className="crosshair top-2 left-2" />
-                <span className="crosshair top-2 right-2" />
-                <span className="crosshair bottom-2 left-2" />
-                <span className="crosshair bottom-2 right-2" />
-
-                {/* Side tick rail — decorative systems chrome */}
-                <div className="hidden md:flex absolute -left-6 top-1/2 -translate-y-1/2 flex-col gap-2 pointer-events-none">
-                  {[...Array(8)].map((_, i) => (
-                    <span
-                      key={i}
-                      className={`block h-px bg-border/60 ${i % 2 === 0 ? 'w-4' : 'w-2'}`}
-                    />
-                  ))}
-                </div>
-
-                {/* Floating coordinates badge */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.9, duration: 0.8, ease: EASE }}
-                  className="absolute -bottom-4 -right-4 bg-card/85 backdrop-blur-xl border border-border/70 rounded-xl px-3 py-2 shadow-xl font-mono"
-                >
-                  <div className="text-[9px] uppercase tracking-[0.22em] text-muted-foreground/70 mb-0.5">
-                    Node
-                  </div>
-                  <div className="text-[11px] text-foreground tracking-wider">
-                    01 / ATL-GT
-                  </div>
-                </motion.div>
+                <img
+                  src={`${import.meta.env.BASE_URL}logos/Portrait_Vidyut.jpg`}
+                  alt="Vidyut Rajagopal"
+                  className="h-full w-full object-cover"
+                  style={{ objectPosition: 'center 25%' }}
+                />
+                {/* Grounds the image in the page rather than floating on it */}
+                <div className="absolute inset-0 bg-gradient-to-t from-background/55 via-transparent to-transparent" />
               </motion.div>
             </div>
           </motion.div>
         </div>
       </motion.div>
 
-      {/* Scroll indicator */}
+      {/* Wayfinding: says there is more below, without animating forever */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1.4, duration: 0.8 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10"
+        transition={{ ...t.gentle, delay: 0.5 }}
+        className="absolute bottom-9 left-1/2 z-10 -translate-x-1/2"
       >
         <a
           href="#about"
-          className="group flex flex-col items-center gap-2 text-muted-foreground/60 hover:text-foreground transition-colors duration-300"
+          className="press group flex flex-col items-center gap-2 text-muted-foreground hover:text-foreground"
         >
-          <span className="font-mono text-[10px] tracking-[0.3em] uppercase">Scroll</span>
-          <motion.div
-            animate={{ y: [0, 6, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-          >
-            <ChevronDown className="w-4 h-4" />
-          </motion.div>
+          <span className="eyebrow">Scroll</span>
+          <ChevronDown className="h-4 w-4 transition-transform duration-200 group-hover:translate-y-0.5" />
         </a>
       </motion.div>
     </section>

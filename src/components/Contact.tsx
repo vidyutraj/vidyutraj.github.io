@@ -4,77 +4,65 @@ import { Button } from '@/components/ui/button';
 import { Github, Linkedin, Mail, BookOpen, ArrowUpRight } from 'lucide-react';
 import { personalInfo } from '@/data/personal';
 import { motion } from 'framer-motion';
-
-const EASE = [0.16, 1, 0.3, 1] as const;
+import { useTransitions } from '@/lib/motion';
 
 export const Contact = () => {
-  return (
-    <section id="contact" className="relative py-32 md:py-44 overflow-hidden">
-      {/* Ambient backdrop — a soft pool of light */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute inset-x-0 bottom-0 h-[600px] bg-[radial-gradient(ellipse_at_bottom,hsl(var(--primary)/0.12),transparent_60%)]" />
-      </div>
+  const t = useTransitions();
 
-      <div className="container relative px-6 md:px-10 max-w-7xl">
+  const reveal = (delay = 0) => ({
+    initial: { opacity: 0, y: t.reduced ? 0 : 16 },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: { once: true, margin: '-60px' },
+    transition: { ...t.gentle, delay },
+  });
+
+  return (
+    <section id="contact" className="relative overflow-hidden py-28 md:py-40">
+      {/* The same light source as the hero, closing the page where it opened */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-[520px] bg-[radial-gradient(ellipse_at_bottom,hsl(var(--primary)/0.10),transparent_62%)]"
+      />
+
+      <div className="container relative max-w-6xl px-6 md:px-10">
         <AnimatedSection>
-          <SectionHeader
-            index="07"
-            kicker="Connect"
-            title="Let's Build Something"
-            meta="Channel Open"
-          />
+          <SectionHeader kicker="Connect" title="Let's build something" />
         </AnimatedSection>
 
-        <div className="mt-20 max-w-4xl">
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
-            transition={{ duration: 0.9, ease: EASE }}
-            className="text-xl md:text-2xl text-foreground/80 leading-relaxed mb-12 max-w-2xl"
-          >
-            Open to discussing opportunities, collaborations, or interesting
-            security challenges.{' '}
-            <span className="font-display italic text-foreground">
-              Always happy to chat.
-            </span>
+        <div className="mt-14 max-w-3xl">
+          <motion.p {...reveal()} className="mb-10 text-body-lg text-foreground/75">
+            Open to discussing opportunities, collaborations, or interesting security
+            challenges. Always happy to chat.
           </motion.p>
 
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
-            transition={{ duration: 0.9, delay: 0.1, ease: EASE }}
-            className="flex flex-col sm:flex-row gap-4 mb-16"
+            {...reveal(0.06)}
+            className="mb-14 flex flex-col gap-4 sm:flex-row sm:items-center"
           >
             <Button variant="hero" size="lg" asChild className="group">
               <a href={`mailto:${personalInfo.social.email}`}>
-                <Mail className="w-4 h-4" />
+                <Mail />
                 Send an email
-                <ArrowUpRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                <ArrowUpRight className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </a>
             </Button>
-            <p className="text-sm text-muted-foreground self-center">
-              Or ask me anything via the chat in the bottom corner.
+            <p className="text-caption text-muted-foreground">
+              Or ask the assistant in the bottom corner.
             </p>
           </motion.div>
 
-          {/* Email display — big, typographic */}
           <motion.a
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
-            transition={{ duration: 0.9, delay: 0.2, ease: EASE }}
+            {...reveal(0.12)}
             href={`mailto:${personalInfo.social.email}`}
-            className="group block"
+            className="press group block"
           >
-            <div className="eyebrow mb-3">Direct</div>
-            <div className="text-3xl md:text-5xl font-display italic text-foreground/90 group-hover:text-primary transition-colors duration-500 tracking-tight flex items-center gap-3 flex-wrap">
-              <span className="underline decoration-border/60 decoration-1 underline-offset-8 group-hover:decoration-primary/60 transition-colors duration-500">
+            <p className="eyebrow mb-3">Direct</p>
+            <span className="flex flex-wrap items-center gap-3 text-display-sm font-medium text-foreground/90 group-hover:text-primary">
+              <span className="underline decoration-border decoration-1 underline-offset-8 group-hover:decoration-primary/60">
                 {personalInfo.social.email}
               </span>
-              <ArrowUpRight className="w-6 h-6 md:w-8 md:h-8 opacity-40 group-hover:opacity-100 transition-all duration-500 group-hover:translate-x-1 group-hover:-translate-y-1" />
-            </div>
+              <ArrowUpRight className="h-6 w-6 opacity-40 transition-all duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-100" />
+            </span>
           </motion.a>
         </div>
       </div>
@@ -90,16 +78,16 @@ export const Footer = () => {
   ];
 
   return (
-    <footer className="relative border-t border-border/40 py-10 bg-background/60 backdrop-blur-sm">
-      <div className="container px-6 md:px-10 max-w-7xl">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
-          <div className="flex items-center gap-4">
-            <div className="w-7 h-7 rounded-lg border border-border/60 bg-card/40 flex items-center justify-center">
-              <span className="font-display text-base text-foreground">V</span>
-            </div>
-            <div className="text-xs text-muted-foreground/80 font-mono tracking-wide">
+    <footer className="relative border-t border-border/60 py-9">
+      <div className="container max-w-6xl px-6 md:px-10">
+        <div className="flex flex-col items-start justify-between gap-5 sm:flex-row sm:items-center">
+          <div className="flex items-center gap-3.5">
+            <span className="flex h-7 w-7 items-center justify-center rounded-full border border-border text-caption font-semibold text-foreground">
+              V
+            </span>
+            <p className="text-caption text-muted-foreground">
               © {new Date().getFullYear()} {personalInfo.name}
-            </div>
+            </p>
           </div>
 
           <div className="flex items-center gap-1">
@@ -109,10 +97,10 @@ export const Footer = () => {
                 href={social.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-foreground/[0.06] transition-all duration-300"
+                className="press rounded-full p-2.5 text-muted-foreground hover:bg-foreground/[0.06] hover:text-foreground"
                 aria-label={social.name}
               >
-                <social.icon className="w-4 h-4" />
+                <social.icon className="h-4 w-4" />
               </a>
             ))}
           </div>

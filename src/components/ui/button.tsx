@@ -5,29 +5,27 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "press inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-body-sm font-medium focus-visible:outline-none disabled:pointer-events-none disabled:opacity-40 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-[0_0_24px_hsl(var(--glow-primary)/0.35)]",
-        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-        outline: "border border-border/80 bg-card/40 backdrop-blur-sm text-foreground hover:border-primary/50 hover:text-primary hover:bg-primary/[0.04]",
+        default: "bg-primary text-primary-foreground shadow-e1 hover:bg-primary/90",
+        destructive: "bg-destructive text-destructive-foreground shadow-e1 hover:bg-destructive/90",
+        outline: "border border-border bg-transparent text-foreground hover:bg-foreground/[0.06]",
         secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-foreground/[0.06] hover:text-foreground",
         link: "text-primary underline-offset-4 hover:underline",
-        // Hero — the primary CTA, refined
-        hero: "bg-foreground text-background font-medium hover:bg-foreground/90 shadow-[0_10px_40px_-10px_hsl(var(--primary)/0.4)] hover:shadow-[0_15px_50px_-10px_hsl(var(--primary)/0.6)] hover:-translate-y-[1px]",
-        // Hero outline — subtle, engineered
-        "hero-outline": "border border-border/80 bg-card/40 backdrop-blur-sm text-foreground font-medium hover:border-primary/50 hover:text-primary hover:bg-primary/[0.04]",
-        // Terminal style (legacy — kept for compatibility)
-        terminal: "bg-secondary/80 text-terminal-green font-mono border border-terminal-green/30 hover:border-terminal-green hover:bg-secondary",
+        // Primary CTA — a solid, confident surface. Depth from elevation, not glow.
+        hero: "bg-foreground text-background shadow-e2 hover:bg-foreground/90 hover:shadow-e3",
+        // Secondary CTA — quiet until you reach for it
+        "hero-outline": "border border-border bg-transparent text-foreground hover:bg-foreground/[0.06]",
       },
       size: {
-        default: "h-10 px-4 py-2",
-        sm: "h-9 rounded-md px-3",
-        lg: "h-12 rounded-md px-8 text-base",
-        xl: "h-14 rounded-lg px-10 text-lg",
-        icon: "h-10 w-10",
+        default: "h-10 px-5",
+        sm: "h-9 px-4 text-caption",
+        lg: "h-12 px-7 text-body",
+        xl: "h-14 px-9 text-body-lg",
+        icon: "h-10 w-10 px-0",
       },
     },
     defaultVariants: {

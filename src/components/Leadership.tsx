@@ -1,57 +1,48 @@
 import { AnimatedSection, StaggerContainer, StaggerItem } from '@/components/AnimatedSection';
 import { SectionHeader } from '@/components/SectionHeader';
-import { Calendar, MapPin, ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import { leadership } from '@/data/leadership';
 
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
 const formatDate = (dateStr: string): string => {
-  const date = new Date(dateStr + '-01');
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  return `${months[date.getMonth()]} ${date.getFullYear()}`;
+  const date = new Date(`${dateStr}-01`);
+  return `${MONTHS[date.getMonth()]} ${date.getFullYear()}`;
 };
 
-const formatDateRange = (startDate: string, endDate: string | null): string => {
-  if (!endDate) return `${formatDate(startDate)} — Present`;
-  return `${formatDate(startDate)} — ${formatDate(endDate)}`;
-};
+const formatDateRange = (startDate: string, endDate: string | null): string =>
+  endDate ? `${formatDate(startDate)} — ${formatDate(endDate)}` : `${formatDate(startDate)} — Present`;
 
 export const Leadership = () => {
-  const sortedLeadership = [...leadership].sort((a, b) => {
-    const aStart = new Date(a.startDate + '-01').getTime();
-    const bStart = new Date(b.startDate + '-01').getTime();
-    return bStart - aStart;
-  });
+  const sorted = [...leadership].sort(
+    (a, b) => new Date(`${b.startDate}-01`).getTime() - new Date(`${a.startDate}-01`).getTime(),
+  );
 
   return (
-    <section id="leadership" className="relative py-32 md:py-40">
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-card/20 to-transparent" />
-      </div>
-
-      <div className="container relative px-6 md:px-10 max-w-7xl">
+    <section id="leadership" className="relative py-28 md:py-36">
+      <div className="container max-w-6xl px-6 md:px-10">
         <AnimatedSection>
           <SectionHeader
-            index="05"
             kicker="Roles"
             title="Leadership"
-            meta={`${leadership.length} roles`}
             description="Leading teams, organizing initiatives, and making things happen. From consulting to student orgs — here's where I've stepped up."
           />
         </AnimatedSection>
 
-        {sortedLeadership.length === 0 ? (
-          <AnimatedSection delay={0.1}>
-            <p className="text-muted-foreground text-center py-16">
+        {sorted.length === 0 ? (
+          <AnimatedSection delay={0.06}>
+            <p className="py-16 text-center text-body text-muted-foreground">
               No leadership positions yet.
             </p>
           </AnimatedSection>
         ) : (
-          <StaggerContainer className="space-y-5 mt-20" staggerDelay={0.08}>
-            {sortedLeadership.map((lead, index) => (
+          <StaggerContainer className="mt-14 space-y-4">
+            {sorted.map((lead, index) => (
               <StaggerItem key={`${lead.organization}-${lead.position}-${index}`}>
-                <div className="surface-interactive p-7 md:p-10 rounded-2xl group">
-                  <div className="flex flex-col md:flex-row md:items-start gap-6">
+                <article className="surface-interactive rounded-2xl p-7 md:p-9">
+                  <div className="flex flex-col gap-6 md:flex-row md:items-start">
                     {lead.logo && (
-                      <div className="flex-shrink-0 w-16 h-16 rounded-xl bg-white dark:bg-card/60 border border-border/60 p-2 flex items-center justify-center">
+                      <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-xl border border-border bg-white p-2">
                         <img
                           src={
                             lead.logo.startsWith('http')
@@ -60,74 +51,57 @@ export const Leadership = () => {
                                   lead.logo.startsWith('/') ? lead.logo.slice(1) : lead.logo
                                 }`
                           }
-                          alt={lead.logoAlt || `${lead.organization} logo`}
-                          className="w-full h-full object-contain"
+                          alt=""
+                          className="h-full w-full object-contain"
                         />
                       </div>
                     )}
 
-                    <div className="flex-grow min-w-0">
-                      <div className="mb-4">
+                    <div className="min-w-0 flex-grow">
+                      <div className="mb-3">
                         {lead.website ? (
                           <a
                             href={lead.website}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1.5 text-xl md:text-2xl font-semibold text-foreground hover:text-primary transition-colors group/link tracking-tight"
+                            className="press group/link inline-flex items-center gap-1.5 text-title font-semibold text-foreground hover:text-primary"
                           >
                             <span>{lead.organization}</span>
-                            <ArrowUpRight className="w-4 h-4 opacity-50 group-hover/link:opacity-100 transition-opacity" />
+                            <ArrowUpRight className="h-4 w-4 opacity-50 transition-opacity group-hover/link:opacity-100" />
                           </a>
                         ) : (
-                          <h3 className="text-xl md:text-2xl font-semibold text-foreground tracking-tight">
+                          <h3 className="text-title font-semibold text-foreground">
                             {lead.organization}
                           </h3>
                         )}
-                        <p className="text-base font-medium text-primary/90 mt-1">
-                          {lead.position}
-                        </p>
+                        <p className="mt-1 text-body font-medium text-primary">{lead.position}</p>
                       </div>
 
-                      <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground mb-5">
-                        <div className="flex items-center gap-1.5">
-                          <Calendar className="w-3 h-3" />
-                          <span className="font-mono">
-                            {formatDateRange(lead.startDate, lead.endDate)}
-                          </span>
-                        </div>
-                        {lead.location && (
-                          <>
-                            <span className="w-1 h-1 rounded-full bg-muted-foreground/40" />
-                            <div className="flex items-center gap-1.5">
-                              <MapPin className="w-3 h-3" />
-                              <span>{lead.location}</span>
-                            </div>
-                          </>
-                        )}
-                      </div>
+                      <p className="mb-5 text-caption text-muted-foreground">
+                        {formatDateRange(lead.startDate, lead.endDate)}
+                        {lead.location && ` · ${lead.location}`}
+                      </p>
 
                       {lead.description && lead.description.length > 0 && (
-                        <div className="space-y-2.5 mb-5">
+                        <ul className="mb-5 space-y-2.5">
                           {lead.description.map((desc, idx) => (
-                            <div
+                            <li
                               key={idx}
-                              className="flex items-start gap-3 text-sm text-muted-foreground leading-relaxed"
+                              className="flex items-start gap-3 text-body-sm text-muted-foreground"
                             >
-                              <span className="text-primary/60 mt-2 flex-shrink-0">
-                                <span className="block w-1 h-1 rounded-full bg-current" />
-                              </span>
+                              <span className="mt-[0.6em] block h-1 w-1 flex-shrink-0 rounded-full bg-muted-foreground/60" />
                               <span>{desc}</span>
-                            </div>
+                            </li>
                           ))}
-                        </div>
+                        </ul>
                       )}
 
                       {lead.achievements && lead.achievements.length > 0 && (
-                        <div className="pt-4 border-t border-border/40">
-                          <div className="eyebrow mb-3">Key Achievements</div>
+                        <div className="border-t border-border/60 pt-4">
+                          <p className="eyebrow mb-3">Key achievements</p>
                           <div className="flex flex-wrap gap-1.5">
                             {lead.achievements.map((achievement, idx) => (
-                              <span key={idx} className="chip text-primary">
+                              <span key={idx} className="chip">
                                 {achievement}
                               </span>
                             ))}
@@ -136,7 +110,7 @@ export const Leadership = () => {
                       )}
                     </div>
                   </div>
-                </div>
+                </article>
               </StaggerItem>
             ))}
           </StaggerContainer>

@@ -1,6 +1,5 @@
-import { AnimatedSection, StaggerContainer, StaggerItem } from '@/components/AnimatedSection';
-import { SectionHeader, TechBadge } from '@/components/SectionHeader';
-import { Button } from '@/components/ui/button';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { animate, motion, AnimatePresence, useMotionValue } from 'framer-motion';
 import {
   Github,
   ExternalLink,
@@ -9,14 +8,14 @@ import {
   Video,
   FileText,
   ArrowUpRight,
-  Minus,
 } from 'lucide-react';
+import { AnimatedSection, StaggerContainer, StaggerItem } from '@/components/AnimatedSection';
+import { SectionHeader, TechBadge } from '@/components/SectionHeader';
+import { Button } from '@/components/ui/button';
 import { projects } from '@/data/projects';
 import { personalInfo } from '@/data/personal';
-import { useMemo, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-
-const EASE = [0.16, 1, 0.3, 1] as const;
+import { useIsMobile } from '@/hooks/use-mobile';
+import { nearestSnap, project as projectMomentum, spring, useTransitions } from '@/lib/motion';
 
 /** Titles promoted to the featured band. Ordered by priority. */
 const FEATURED_TITLES = [
@@ -25,341 +24,306 @@ const FEATURED_TITLES = [
   'SimpliEarn',
 ];
 
-type Project = typeof projects[0];
+type Project = (typeof projects)[0];
 
-/* ───────────────────────── Featured Card ───────────────────────── */
+/* ───────────────────────── Featured card ───────────────────────── */
 
-const FeaturedCard = ({ project, index }: { project: Project; index: number }) => {
-  const id = `FT-${String(index + 1).padStart(2, '0')}`;
+const LINK_KINDS = [
+  { key: 'githubUrl', icon: Github, label: 'GitHub' },
+  { key: 'demoUrl', icon: ExternalLink, label: 'Live demo' },
+  { key: 'videoUrl', icon: Video, label: 'Video' },
+  { key: 'slidesUrl', icon: FileText, label: 'Slides' },
+] as const;
+
+const FeaturedCard = ({ project }: { project: Project }) => (
+  <article className="surface-interactive group flex h-full flex-col rounded-2xl p-7 md:p-8">
+    <p className="eyebrow mb-4">{project.category}</p>
+
+    <h3 className="mb-4 text-title font-semibold text-foreground group-hover:text-primary">
+      {project.title}
+    </h3>
+
+    <p className="mb-6 flex-grow text-body-sm text-muted-foreground">{project.description}</p>
+
+    <div className="mb-6 space-y-3 border-l border-border pl-4">
+      <div>
+        <p className="eyebrow mb-1">Problem</p>
+        <p className="text-caption text-muted-foreground">{project.problem}</p>
+      </div>
+      <div>
+        <p className="eyebrow mb-1">Outcome</p>
+        <p className="text-caption text-foreground/85">{project.outcome}</p>
+      </div>
+    </div>
+
+    {project.achievements && project.achievements.length > 0 && (
+      <div className="mb-6 flex items-start gap-2.5 rounded-xl border border-border bg-secondary/60 p-3">
+        <Trophy className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-primary" />
+        <p className="text-caption text-foreground/85">{project.achievements[0]}</p>
+      </div>
+    )}
+
+    <div className="mb-5 flex flex-wrap gap-1.5">
+      {project.techStack.slice(0, 6).map((tech) => (
+        <TechBadge key={tech}>{tech}</TechBadge>
+      ))}
+      {project.techStack.length > 6 && (
+        <span className="chip text-muted-foreground/70">+{project.techStack.length - 6}</span>
+      )}
+    </div>
+
+    <div className="mt-auto flex items-center gap-1 border-t border-border/60 pt-5">
+      {LINK_KINDS.map(({ key, icon: Icon, label }) => {
+        const href = project[key as keyof Project] as string | undefined;
+        if (!href) return null;
+        return (
+          <a
+            key={key}
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            title={label}
+            aria-label={`${project.title} — ${label}`}
+            className="press rounded-full p-2 text-muted-foreground hover:bg-foreground/[0.06] hover:text-foreground"
+          >
+            <Icon className="h-4 w-4" />
+          </a>
+        );
+      })}
+    </div>
+  </article>
+);
+
+/* ───────────────────── Featured carousel (touch) ───────────────────── */
+
+const GAP = 16;
+const CARD_RATIO = 0.86;
+
+/**
+ * A flick throws the track: the release velocity projects a resting point, and
+ * the card nearest that projection wins — not the card nearest where the finger
+ * happened to stop. The same velocity is handed to the spring, so there's no
+ * seam between dragging and settling.
+ */
+const FeaturedCarousel = ({ items }: { items: Project[] }) => {
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const [step, setStep] = useState(0);
+  const [maxOffset, setMaxOffset] = useState(0);
+  const [active, setActive] = useState(0);
+  const x = useMotionValue(0);
+  const t = useTransitions();
+
+  useEffect(() => {
+    const element = viewportRef.current;
+    if (!element) return;
+
+    const measure = () => {
+      const width = element.clientWidth;
+      const cardStep = width * CARD_RATIO + GAP;
+      setStep(cardStep);
+      setMaxOffset(Math.max(0, cardStep * items.length - GAP - width));
+    };
+
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [items.length]);
+
+  const snapPoints = useMemo(
+    () => items.map((_, index) => -Math.min(index * step, maxOffset)),
+    [items, step, maxOffset],
+  );
+
+  const goTo = (index: number, velocity = 0) => {
+    setActive(index);
+    animate(x, snapPoints[index], { ...spring.momentum, velocity });
+  };
 
   return (
-    <StaggerItem>
-      <article className="group relative h-full rounded-2xl surface-interactive overflow-hidden flex flex-col">
-        {/* Top telemetry strip */}
-        <div className="flex items-center justify-between px-6 md:px-7 py-3 border-b border-border/50 bg-card/40">
-          <div className="flex items-center gap-3">
-            <span className="status-info pulse-dot" />
-            <span className="mono-meta">{id}</span>
-            <span className="mono-meta text-muted-foreground/50">/</span>
-            <span className="mono-meta">Featured</span>
-          </div>
-          <span className="mono-meta text-primary/90">{project.category}</span>
-        </div>
-
-        {/* Body */}
-        <div className="flex-1 flex flex-col p-6 md:p-7">
-          <h3 className="text-2xl md:text-3xl font-semibold text-foreground tracking-tight leading-tight mb-4 group-hover:text-primary transition-colors duration-500">
-            {project.title}
-          </h3>
-
-          <p className="text-sm text-muted-foreground leading-relaxed mb-6 flex-grow">
-            {project.description}
-          </p>
-
-          {/* Signal strip — Problem → Outcome */}
-          <div className="relative mb-6 pl-4 border-l border-border/60 space-y-3">
-            <div>
-              <div className="mono-meta mb-1">Problem</div>
-              <p className="text-xs text-muted-foreground/90 leading-relaxed">{project.problem}</p>
+    <div className="md:hidden">
+      <div ref={viewportRef} className="overflow-hidden">
+        <motion.div
+          className="drag-x flex items-stretch"
+          style={{ x, gap: GAP }}
+          drag={t.reduced ? false : 'x'}
+          dragConstraints={{ left: -maxOffset, right: 0 }}
+          /* 0.55 is the same resistance constant used for sheet boundaries */
+          dragElastic={0.55}
+          onDragEnd={(_, info) => {
+            const projected = x.get() + projectMomentum(info.velocity.x);
+            const target = nearestSnap(projected, snapPoints);
+            const index = snapPoints.indexOf(target);
+            goTo(index === -1 ? active : index, info.velocity.x);
+          }}
+        >
+          {items.map((item) => (
+            <div key={item.title} className="shrink-0" style={{ width: `${CARD_RATIO * 100}%` }}>
+              <FeaturedCard project={item} />
             </div>
-            <div>
-              <div className="mono-meta mb-1 text-accent/90">Outcome</div>
-              <p className="text-xs text-foreground/85 leading-relaxed">{project.outcome}</p>
-            </div>
-          </div>
+          ))}
+        </motion.div>
+      </div>
 
-          {/* Key achievement pulled up if present */}
-          {project.achievements && project.achievements.length > 0 && (
-            <div className="flex items-start gap-2 mb-6 p-3 rounded-lg bg-primary/[0.04] border border-primary/15">
-              <Trophy className="w-3.5 h-3.5 text-primary flex-shrink-0 mt-0.5" />
-              <p className="text-xs text-foreground/85 leading-relaxed">{project.achievements[0]}</p>
-            </div>
-          )}
-
-          {/* Tech — top 6 shown, rest indicated */}
-          <div className="flex flex-wrap gap-1.5 mb-5">
-            {project.techStack.slice(0, 6).map((tech) => (
-              <TechBadge key={tech}>{tech}</TechBadge>
-            ))}
-            {project.techStack.length > 6 && (
-              <span className="chip !text-[10px] text-muted-foreground/70">
-                +{project.techStack.length - 6}
-              </span>
-            )}
-          </div>
-
-          {/* Links */}
-          <div className="flex items-center gap-1 pt-5 border-t border-border/50 mt-auto">
-            {project.githubUrl && (
-              <a
-                href={project.githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-foreground/[0.06] transition-all"
-                title="GitHub"
-                aria-label={`${project.title} GitHub`}
-              >
-                <Github className="w-4 h-4" />
-              </a>
-            )}
-            {project.demoUrl && (
-              <a
-                href={project.demoUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-foreground/[0.06] transition-all"
-                title="Live Demo"
-                aria-label={`${project.title} Demo`}
-              >
-                <ExternalLink className="w-4 h-4" />
-              </a>
-            )}
-            {project.videoUrl && (
-              <a
-                href={project.videoUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-foreground/[0.06] transition-all"
-                title="Video"
-                aria-label={`${project.title} Video`}
-              >
-                <Video className="w-4 h-4" />
-              </a>
-            )}
-            {project.slidesUrl && (
-              <a
-                href={project.slidesUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-foreground/[0.06] transition-all"
-                title="Slides"
-                aria-label={`${project.title} Slides`}
-              >
-                <FileText className="w-4 h-4" />
-              </a>
-            )}
-          </div>
-        </div>
-
-        {/* Corner crosshairs */}
-        <span className="crosshair top-2 left-2 opacity-60" />
-        <span className="crosshair top-2 right-2 opacity-60" />
-      </article>
-    </StaggerItem>
+      <div className="mt-5 flex justify-center gap-2">
+        {items.map((item, index) => (
+          <button
+            key={item.title}
+            onClick={() => goTo(index)}
+            aria-label={`Show ${item.title}`}
+            aria-current={active === index}
+            className="press p-1.5"
+          >
+            <span
+              className={`block h-1.5 rounded-full transition-all duration-200 ${
+                active === index ? 'w-5 bg-foreground' : 'w-1.5 bg-foreground/25'
+              }`}
+            />
+          </button>
+        ))}
+      </div>
+    </div>
   );
 };
 
-/* ───────────────────────── Registry Row ───────────────────────── */
+/* ───────────────────────── Registry row ───────────────────────── */
 
-const RegistryRow = ({
-  project,
-  index,
-}: {
-  project: Project;
-  index: number;
-}) => {
+const RegistryRow = ({ project }: { project: Project }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const id = String(index + 1).padStart(3, '0');
+  const t = useTransitions();
 
-  const hasDossier =
-    project.achievements || project.additionalDetails || project.slidesUrl || project.videoUrl;
+  const hasLinks = LINK_KINDS.some(({ key }) => project[key as keyof Project]);
 
   return (
-    <div className="border-t border-border/50 first:border-t-0">
-      {/* Row — click to expand */}
+    <div className="border-t border-border/60 first:border-t-0">
       <button
-        onClick={() => setIsOpen(!isOpen)}
-        className={`w-full group/row relative flex items-center gap-4 px-4 md:px-6 py-4 text-left transition-colors duration-300 hover:bg-foreground/[0.02] ${
-          isOpen ? 'bg-foreground/[0.02]' : ''
+        onClick={() => setIsOpen((open) => !open)}
+        className={`press group/row flex w-full items-center gap-4 px-5 py-4 text-left hover:bg-foreground/[0.03] md:px-6 ${
+          isOpen ? 'bg-foreground/[0.03]' : ''
         }`}
         aria-expanded={isOpen}
       >
-        {/* ID */}
-        <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60 w-10 shrink-0 tabular-nums">
-          {id}
-        </span>
-
-        {/* Title + category */}
-        <div className="flex-grow min-w-0 flex items-center gap-3">
-          <div className="min-w-0 flex-shrink">
-            <h4 className="text-sm md:text-base font-medium text-foreground truncate tracking-tight group-hover/row:text-primary transition-colors duration-300">
-              {project.title}
-            </h4>
-          </div>
-          <span className="hidden md:inline mono-meta text-muted-foreground/60 shrink-0">
-            · {project.category}
+        <div className="flex min-w-0 flex-grow items-center gap-3">
+          <h4 className="truncate text-body-sm font-medium text-foreground group-hover/row:text-primary">
+            {project.title}
+          </h4>
+          <span className="hidden shrink-0 text-caption text-muted-foreground md:inline">
+            {project.category}
           </span>
         </div>
 
-        {/* Tech preview — desktop only */}
-        <div className="hidden lg:flex items-center gap-1.5 shrink-0 max-w-[280px] overflow-hidden">
-          {project.techStack.slice(0, 3).map((tech) => (
-            <span key={tech} className="chip !text-[10px] !py-0.5 !px-2">
+        <div className="hidden max-w-[300px] shrink-0 items-center gap-1.5 overflow-hidden lg:flex">
+          {project.techStack.slice(0, 2).map((tech) => (
+            <span key={tech} className="chip">
               {tech}
             </span>
           ))}
-          {project.techStack.length > 3 && (
-            <span className="mono-meta text-muted-foreground/50">+{project.techStack.length - 3}</span>
+          {project.techStack.length > 2 && (
+            <span className="text-caption text-muted-foreground/60">
+              +{project.techStack.length - 2}
+            </span>
           )}
         </div>
 
-        {/* Link glyphs */}
-        <div className="flex items-center gap-1 text-muted-foreground/60 shrink-0">
-          {project.githubUrl && <Github className="w-3.5 h-3.5" />}
-          {project.demoUrl && <ExternalLink className="w-3.5 h-3.5" />}
-          {project.videoUrl && <Video className="w-3.5 h-3.5" />}
-          {project.slidesUrl && <FileText className="w-3.5 h-3.5" />}
-        </div>
-
-        {/* Expand chevron */}
         <motion.span
           animate={{ rotate: isOpen ? 180 : 0 }}
-          transition={{ duration: 0.4, ease: EASE }}
-          className="text-muted-foreground/50 group-hover/row:text-foreground transition-colors"
+          transition={t.snappy}
+          className="shrink-0 text-muted-foreground/70 group-hover/row:text-foreground"
         >
-          <ChevronDown className="w-4 h-4" />
+          <ChevronDown className="h-4 w-4" />
         </motion.span>
       </button>
 
-      {/* Dossier — inline expansion */}
       <AnimatePresence initial={false}>
         {isOpen && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.5, ease: EASE }}
+            transition={t.standard}
             className="overflow-hidden"
           >
-            <div className="px-4 md:px-6 pb-8 pt-2">
-              <div className="grid md:grid-cols-[2fr_1fr] gap-8 pl-14">
-                {/* Left — narrative */}
-                <div className="space-y-5">
-                  <p className="text-sm text-foreground/85 leading-relaxed">
-                    {project.description}
-                  </p>
+            <div className="grid gap-8 px-5 pb-8 pt-1 md:grid-cols-[2fr_1fr] md:px-6">
+              <div className="space-y-5">
+                <p className="text-body-sm text-foreground/85">{project.description}</p>
 
-                  <div className="space-y-3 pl-4 border-l border-border/60">
-                    <div>
-                      <div className="mono-meta mb-1">Problem</div>
-                      <p className="text-xs text-muted-foreground leading-relaxed">{project.problem}</p>
-                    </div>
-                    <div>
-                      <div className="mono-meta mb-1 text-primary/90">Approach</div>
-                      <p className="text-xs text-muted-foreground leading-relaxed">{project.approach}</p>
-                    </div>
-                    <div>
-                      <div className="mono-meta mb-1 text-accent/90">Outcome</div>
-                      <p className="text-xs text-foreground/85 leading-relaxed">{project.outcome}</p>
-                    </div>
+                <div className="space-y-3 border-l border-border pl-4">
+                  <div>
+                    <p className="eyebrow mb-1">Problem</p>
+                    <p className="text-caption text-muted-foreground">{project.problem}</p>
                   </div>
-
-                  {project.achievements && project.achievements.length > 0 && (
-                    <div>
-                      <div className="mono-meta mb-3 flex items-center gap-2">
-                        <Trophy className="w-3 h-3" />
-                        <span>Achievements</span>
-                      </div>
-                      <ul className="space-y-1.5">
-                        {project.achievements.map((a, i) => (
-                          <li
-                            key={i}
-                            className="flex items-start gap-2.5 text-xs text-muted-foreground leading-relaxed"
-                          >
-                            <Minus className="w-3 h-3 text-primary/70 mt-[5px] flex-shrink-0" />
-                            <span>{a}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-
-                  {project.additionalDetails && (
-                    <div>
-                      <div className="mono-meta mb-2">Details</div>
-                      <p className="text-xs text-muted-foreground leading-relaxed">
-                        {project.additionalDetails}
-                      </p>
-                    </div>
-                  )}
+                  <div>
+                    <p className="eyebrow mb-1">Approach</p>
+                    <p className="text-caption text-muted-foreground">{project.approach}</p>
+                  </div>
+                  <div>
+                    <p className="eyebrow mb-1">Outcome</p>
+                    <p className="text-caption text-foreground/85">{project.outcome}</p>
+                  </div>
                 </div>
 
-                {/* Right — meta panel */}
-                <div className="space-y-5">
-                  {/* Stack */}
+                {project.achievements && project.achievements.length > 0 && (
                   <div>
-                    <div className="mono-meta mb-3">Stack · {project.techStack.length}</div>
-                    <div className="flex flex-wrap gap-1.5">
-                      {project.techStack.map((tech) => (
-                        <TechBadge key={tech}>{tech}</TechBadge>
+                    <p className="eyebrow mb-3">Achievements</p>
+                    <ul className="space-y-1.5">
+                      {project.achievements.map((achievement, i) => (
+                        <li
+                          key={i}
+                          className="flex items-start gap-2.5 text-caption text-muted-foreground"
+                        >
+                          <span className="mt-[0.6em] block h-1 w-1 flex-shrink-0 rounded-full bg-muted-foreground/60" />
+                          <span>{achievement}</span>
+                        </li>
                       ))}
-                    </div>
+                    </ul>
                   </div>
+                )}
 
-                  {/* Links panel */}
+                {project.additionalDetails && (
                   <div>
-                    <div className="mono-meta mb-3">Links</div>
-                    <div className="space-y-1.5">
-                      {project.githubUrl && (
+                    <p className="eyebrow mb-2">Details</p>
+                    <p className="text-caption text-muted-foreground">
+                      {project.additionalDetails}
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-5">
+                <div>
+                  <p className="eyebrow mb-3">Stack</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {project.techStack.map((tech) => (
+                      <TechBadge key={tech}>{tech}</TechBadge>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <p className="eyebrow mb-3">Links</p>
+                  <div className="space-y-1.5">
+                    {LINK_KINDS.map(({ key, icon: Icon, label }) => {
+                      const href = project[key as keyof Project] as string | undefined;
+                      if (!href) return null;
+                      return (
                         <a
-                          href={project.githubUrl}
+                          key={key}
+                          href={href}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center justify-between gap-2 text-xs text-muted-foreground hover:text-foreground px-3 py-2 rounded-md border border-border/50 hover:border-primary/30 bg-card/40 transition-all group/link"
+                          className="press group/link flex items-center justify-between gap-2 rounded-xl border border-border px-3 py-2 text-caption text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground"
                         >
                           <span className="flex items-center gap-2">
-                            <Github className="w-3.5 h-3.5" />
-                            <span>Repository</span>
+                            <Icon className="h-3.5 w-3.5" />
+                            <span>{label}</span>
                           </span>
-                          <ArrowUpRight className="w-3 h-3 opacity-50 group-hover/link:opacity-100 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-all" />
+                          <ArrowUpRight className="h-3 w-3 opacity-50 transition-all duration-200 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 group-hover/link:opacity-100" />
                         </a>
-                      )}
-                      {project.demoUrl && (
-                        <a
-                          href={project.demoUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center justify-between gap-2 text-xs text-muted-foreground hover:text-foreground px-3 py-2 rounded-md border border-border/50 hover:border-primary/30 bg-card/40 transition-all group/link"
-                        >
-                          <span className="flex items-center gap-2">
-                            <ExternalLink className="w-3.5 h-3.5" />
-                            <span>Live demo</span>
-                          </span>
-                          <ArrowUpRight className="w-3 h-3 opacity-50 group-hover/link:opacity-100 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-all" />
-                        </a>
-                      )}
-                      {project.videoUrl && (
-                        <a
-                          href={project.videoUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center justify-between gap-2 text-xs text-muted-foreground hover:text-foreground px-3 py-2 rounded-md border border-border/50 hover:border-primary/30 bg-card/40 transition-all group/link"
-                        >
-                          <span className="flex items-center gap-2">
-                            <Video className="w-3.5 h-3.5" />
-                            <span>Video walkthrough</span>
-                          </span>
-                          <ArrowUpRight className="w-3 h-3 opacity-50 group-hover/link:opacity-100 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-all" />
-                        </a>
-                      )}
-                      {project.slidesUrl && (
-                        <a
-                          href={project.slidesUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center justify-between gap-2 text-xs text-muted-foreground hover:text-foreground px-3 py-2 rounded-md border border-border/50 hover:border-primary/30 bg-card/40 transition-all group/link"
-                        >
-                          <span className="flex items-center gap-2">
-                            <FileText className="w-3.5 h-3.5" />
-                            <span>Slides</span>
-                          </span>
-                          <ArrowUpRight className="w-3 h-3 opacity-50 group-hover/link:opacity-100 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-all" />
-                        </a>
-                      )}
-                      {!hasDossier && !project.githubUrl && !project.demoUrl && (
-                        <div className="mono-meta text-muted-foreground/50">No external links</div>
-                      )}
-                    </div>
+                      );
+                    })}
+                    {!hasLinks && (
+                      <p className="text-caption text-muted-foreground/60">No external links</p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -375,13 +339,13 @@ const RegistryRow = ({
 
 export const Projects = () => {
   const [activeCategory, setActiveCategory] = useState<string>('All');
+  const isMobile = useIsMobile();
 
-  // Split featured vs registry
   const { featured, rest } = useMemo(() => {
     const featuredSet = new Set(FEATURED_TITLES);
-    const featuredProjects = FEATURED_TITLES
-      .map((title) => projects.find((p) => p.title === title))
-      .filter((p): p is Project => Boolean(p));
+    const featuredProjects = FEATURED_TITLES.map((title) =>
+      projects.find((p) => p.title === title),
+    ).filter((p): p is Project => Boolean(p));
     const restProjects = projects.filter((p) => !featuredSet.has(p.title));
     return { featured: featuredProjects, rest: restProjects };
   }, []);
@@ -391,69 +355,45 @@ export const Projects = () => {
     activeCategory === 'All' ? rest : rest.filter((p) => p.category === activeCategory);
 
   return (
-    <section id="projects" className="relative py-32 md:py-40">
-      <div className="container px-6 md:px-10 max-w-7xl">
+    <section id="projects" className="relative py-28 md:py-36">
+      <div className="container max-w-6xl px-6 md:px-10">
         <AnimatedSection>
           <SectionHeader
-            index="03"
             kicker="Selected Work"
             title="Projects"
-            meta={`${projects.length} records`}
             description="A mix of security labs, cloud infrastructure, automation tools, and fullstack apps I've built—from hackathon winners to hands-on AWS experiments. Each one taught me something new (and sometimes broke in interesting ways)."
           />
         </AnimatedSection>
 
-        {/* ─── Featured band ─── */}
         {featured.length > 0 && (
-          <div className="mt-16">
-            <AnimatedSection>
-              <div className="flex items-center justify-between mb-6">
-                <div className="telemetry-strip">
-                  <span className="status-info" />
-                  <span>Priority Feed</span>
-                  <span className="text-muted-foreground/50">Selected</span>
-                </div>
-                <span className="mono-meta">
-                  {String(featured.length).padStart(2, '0')} ACTIVE
-                </span>
-              </div>
-            </AnimatedSection>
-
-            <StaggerContainer
-              className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 items-stretch"
-              staggerDelay={0.08}
-            >
-              {featured.map((project, i) => (
-                <FeaturedCard key={project.title} project={project} index={i} />
-              ))}
-            </StaggerContainer>
+          <div className="mt-14">
+            {/* Swipe on touch, grid on pointer — same cards either way */}
+            {isMobile ? (
+              <FeaturedCarousel items={featured} />
+            ) : (
+              <StaggerContainer className="grid items-stretch gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {featured.map((item) => (
+                  <StaggerItem key={item.title} className="h-full">
+                    <FeaturedCard project={item} />
+                  </StaggerItem>
+                ))}
+              </StaggerContainer>
+            )}
           </div>
         )}
 
-        {/* ─── Registry ─── */}
-        <div className="mt-20">
+        <div className="mt-16">
           <AnimatedSection>
-            <div className="flex items-center justify-between mb-6 gap-4">
-              <div className="telemetry-strip">
-                <span className="status-ok" />
-                <span>Full Registry</span>
-                <span className="text-muted-foreground/50">Archive</span>
-              </div>
-              <span className="mono-meta">
-                {String(filteredRest.length).padStart(2, '0')} /{' '}
-                {String(rest.length).padStart(2, '0')}
-              </span>
-            </div>
+            <p className="eyebrow mb-4">Everything else</p>
           </AnimatedSection>
 
-          {/* Filter pills */}
           <AnimatedSection delay={0.05}>
-            <div className="flex flex-wrap gap-1.5 mb-6">
+            <div className="mb-5 flex flex-wrap gap-1.5">
               {categories.map((category) => (
                 <button
                   key={category}
                   onClick={() => setActiveCategory(category)}
-                  className={`relative px-3.5 py-1.5 text-[11px] font-mono tracking-wide uppercase rounded-full transition-all duration-300 ${
+                  className={`press relative rounded-full px-3.5 py-1.5 text-caption font-medium ${
                     activeCategory === category
                       ? 'text-background'
                       : 'text-muted-foreground hover:text-foreground'
@@ -463,7 +403,7 @@ export const Projects = () => {
                     <motion.span
                       layoutId="registry-pill"
                       className="absolute inset-0 rounded-full bg-foreground"
-                      transition={{ type: 'spring', stiffness: 380, damping: 32 }}
+                      transition={spring.snappy}
                     />
                   )}
                   <span className="relative">{category}</span>
@@ -472,46 +412,27 @@ export const Projects = () => {
             </div>
           </AnimatedSection>
 
-          {/* Table header */}
           <AnimatedSection delay={0.1}>
-            <div className="hidden md:flex items-center gap-4 px-4 md:px-6 py-3 border border-border/60 rounded-t-xl bg-card/40 backdrop-blur-sm">
-              <span className="mono-meta w-10 shrink-0">ID</span>
-              <span className="mono-meta flex-grow">Project</span>
-              <span className="mono-meta hidden lg:block w-[280px] shrink-0">Stack</span>
-              <span className="mono-meta w-auto shrink-0">Links</span>
-              <span className="mono-meta w-4 shrink-0"></span>
-            </div>
-
-            {/* Table body */}
-            <div className="border border-border/60 border-t-0 md:border-t-0 rounded-b-xl md:rounded-b-xl rounded-t-xl md:rounded-t-none bg-card/20 backdrop-blur-sm overflow-hidden">
+            <div className="overflow-hidden rounded-2xl border border-border/70">
               {filteredRest.length === 0 ? (
-                <div className="px-6 py-12 text-center mono-meta text-muted-foreground/60">
-                  No records match the current filter.
-                </div>
+                <p className="px-6 py-12 text-center text-body-sm text-muted-foreground">
+                  Nothing matches that filter.
+                </p>
               ) : (
-                filteredRest.map((project, i) => (
-                  <RegistryRow
-                    key={`${project.title}-${i}`}
-                    project={project}
-                    index={i}
-                  />
+                filteredRest.map((item, i) => (
+                  <RegistryRow key={`${item.title}-${i}`} project={item} />
                 ))
               )}
             </div>
           </AnimatedSection>
         </div>
 
-        {/* CTA */}
-        <AnimatedSection delay={0.2} className="mt-16 text-center">
+        <AnimatedSection delay={0.15} className="mt-14 text-center">
           <Button variant="hero-outline" size="lg" asChild className="group">
-            <a
-              href={personalInfo.social.github}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Github className="w-4 h-4" />
+            <a href={personalInfo.social.github} target="_blank" rel="noopener noreferrer">
+              <Github />
               See more on GitHub
-              <ArrowUpRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              <ArrowUpRight className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </a>
           </Button>
         </AnimatedSection>
